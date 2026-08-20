@@ -1,0 +1,2 @@
+"<!DOCTYPE html>\n<html lang=\"{{ str_replace('_', '-', app()->getLocale()) }}\">\n<head>\n    <meta charset=\"utf-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n    <title>Queue Display - {{ config('app.name', 'Antree'
+<truncated 23202 bytes>
