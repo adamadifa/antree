@@ -35,7 +35,7 @@
     {{-- Alert Notice --}}
     <div class="bg-[#EBF5FB] border border-[#D4E6F1] text-[#2471A3] px-4 py-2.5 rounded-xl flex items-center justify-between text-xs font-medium shadow-sm">
         <div class="flex items-center space-x-2">
-            <span>Sistem antrean live aktif: Hari ini tercatat <strong class="font-bold text-[#1B4F72]">{{ $totalToday }} tiket</strong> masuk dengan tingkat penyelesaian <strong class="font-bold text-[#1B4F72]">{{ $completionRate }}%</strong>.</span>
+            <span data-alert-banner>Sistem antrean live aktif: Hari ini tercatat <strong class="font-bold text-[#1B4F72]">{{ $totalToday }} tiket</strong> masuk dengan tingkat penyelesaian <strong class="font-bold text-[#1B4F72]">{{ $completionRate }}%</strong>.</span>
         </div>
         <button class="text-[#2471A3] hover:text-[#1B4F72] text-sm leading-none">&times;</button>
     </div>
@@ -97,19 +97,19 @@
                 <div class="sm:col-span-6 space-y-2 text-xs">
                     <div class="flex items-center space-x-2">
                         <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 flex-shrink-0"></span>
-                        <span class="text-slate-500 text-[11px]"><strong class="text-slate-800 font-bold">{{ $completedToday }}</strong> Selesai (Completed)</span>
+                        <span class="text-slate-500 text-[11px]"><strong class="text-slate-800 font-bold" data-stat="completedToday">{{ $completedToday }}</strong> Selesai (Completed)</span>
                     </div>
                     <div class="flex items-center space-x-2">
                         <span class="w-2.5 h-2.5 rounded-full bg-blue-500 flex-shrink-0"></span>
-                        <span class="text-slate-500 text-[11px]"><strong class="text-slate-800 font-bold">{{ $servingNow }}</strong> Sedang Dilayani</span>
+                        <span class="text-slate-500 text-[11px]"><strong class="text-slate-800 font-bold" data-stat="servingNow">{{ $servingNow }}</strong> Sedang Dilayani</span>
                     </div>
                     <div class="flex items-center space-x-2">
                         <span class="w-2.5 h-2.5 rounded-full bg-amber-500 flex-shrink-0"></span>
-                        <span class="text-slate-500 text-[11px]"><strong class="text-slate-800 font-bold">{{ $waitingToday }}</strong> Menunggu (Waiting)</span>
+                        <span class="text-slate-500 text-[11px]"><strong class="text-slate-800 font-bold" data-stat="waitingToday">{{ $waitingToday }}</strong> Menunggu (Waiting)</span>
                     </div>
                     <div class="flex items-center space-x-2">
                         <span class="w-2.5 h-2.5 rounded-full bg-rose-500 flex-shrink-0"></span>
-                        <span class="text-slate-500 text-[11px]"><strong class="text-slate-800 font-bold">{{ $skippedToday }}</strong> Dilewati (Skipped)</span>
+                        <span class="text-slate-500 text-[11px]"><strong class="text-slate-800 font-bold" data-stat="skippedToday">{{ $skippedToday }}</strong> Dilewati (Skipped)</span>
                     </div>
                 </div>
 
@@ -151,7 +151,7 @@
                                 stroke-dasharray="{{ $dashSkip }} {{ $c }}" stroke-dashoffset="{{ $offset4 }}" />
                     </svg>
                     <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                        <span class="text-xs font-bold text-slate-800">{{ $totalToday }}</span>
+                        <span class="text-xs font-bold text-slate-800" data-stat="totalToday">{{ $totalToday }}</span>
                         <span class="text-[9px] text-slate-400 font-medium">Antrean</span>
                     </div>
                 </div>
@@ -176,23 +176,23 @@
             <div class="grid grid-cols-2 gap-y-3 gap-x-2 text-xs">
                 <div>
                     <span class="text-slate-400 text-[11px] block">Total Antrian</span>
-                    <span class="text-base font-extrabold text-slate-800">{{ $totalToday }}</span>
+                    <span class="text-base font-extrabold text-slate-800" data-stat="totalToday">{{ $totalToday }}</span>
                 </div>
                 <div>
                     <span class="text-slate-400 text-[11px] block">Selesai</span>
-                    <span class="text-base font-extrabold text-slate-800">{{ $completedToday }}</span>
+                    <span class="text-base font-extrabold text-slate-800" data-stat="completedToday">{{ $completedToday }}</span>
                 </div>
                 <div>
                     <span class="text-slate-400 text-[11px] block">Menunggu</span>
-                    <span class="text-base font-extrabold text-slate-800">{{ $waitingToday }}</span>
+                    <span class="text-base font-extrabold text-slate-800" data-stat="waitingToday">{{ $waitingToday }}</span>
                 </div>
                 <div>
                     <span class="text-slate-400 text-[11px] block">Dilewati</span>
-                    <span class="text-base font-extrabold text-slate-800">{{ $skippedToday }}</span>
+                    <span class="text-base font-extrabold text-slate-800" data-stat="skippedToday">{{ $skippedToday }}</span>
                 </div>
                 <div>
                     <span class="text-slate-400 text-[11px] block">Weekly Total</span>
-                    <span class="text-base font-extrabold text-slate-800">{{ $totalWeek }}</span>
+                    <span class="text-base font-extrabold text-slate-800" data-stat="totalWeek">{{ $totalWeek }}</span>
                 </div>
                 <div>
                     <span class="text-slate-400 text-[11px] block">Active Loket</span>
@@ -217,7 +217,7 @@
             </div>
             <div>
                 <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Hari Ini</span>
-                <span class="text-xl font-extrabold text-slate-800 leading-tight block mt-0.5">{{ $totalToday }}</span>
+                <span class="text-xl font-extrabold text-slate-800 leading-tight block mt-0.5" data-stat="totalToday">{{ $totalToday }}</span>
             </div>
         </div>
 
@@ -228,7 +228,7 @@
             </div>
             <div>
                 <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Minggu Ini</span>
-                <span class="text-xl font-extrabold text-slate-800 leading-tight block mt-0.5">{{ $totalWeek }}</span>
+                <span class="text-xl font-extrabold text-slate-800 leading-tight block mt-0.5" data-stat="totalWeek">{{ $totalWeek }}</span>
             </div>
         </div>
 
@@ -239,7 +239,7 @@
             </div>
             <div>
                 <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Bulan Ini</span>
-                <span class="text-xl font-extrabold text-slate-800 leading-tight block mt-0.5">{{ $totalMonth }}</span>
+                <span class="text-xl font-extrabold text-slate-800 leading-tight block mt-0.5" data-stat="totalMonth">{{ $totalMonth }}</span>
             </div>
         </div>
 
@@ -250,7 +250,7 @@
             </div>
             <div>
                 <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Layanan</span>
-                <span class="text-xl font-extrabold text-slate-800 leading-tight block mt-0.5">{{ $avgServiceTime }}</span>
+                <span class="text-xl font-extrabold text-slate-800 leading-tight block mt-0.5" data-stat="avgServiceTime">{{ $avgServiceTime }}</span>
             </div>
         </div>
     </div>
@@ -361,7 +361,7 @@
                 </div>
             </div>
 
-            <div class="space-y-2.5 overflow-x-auto flex-1">
+            <div class="space-y-2.5 overflow-x-auto flex-1" data-recent-queues>
                 @forelse($recentQueues->take(5) as $q)
                 <div class="flex items-center justify-between p-2.5 rounded-xl border border-slate-100 hover:bg-slate-50/80 transition duration-150 group">
                     <div class="flex items-center space-x-3">
@@ -541,7 +541,7 @@
                 <a href="{{ route('admin.reports.index') }}" class="text-xs font-semibold text-slate-500 hover:text-slate-700">View All</a>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4" data-recent-activities>
                 @forelse($recentActivities->take(4) as $act)
                 <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 flex items-start space-x-3 hover:bg-slate-100/50 transition">
                     <div class="w-7 h-7 rounded-full bg-orange-50 border border-orange-100 flex items-center justify-center font-extrabold text-[10px] text-orange-600 uppercase mt-0.5">
@@ -587,15 +587,100 @@
     }
     setInterval(updateClock, 1000);
 
+    // ─── AJAX Realtime Dashboard Update ───
+    function refreshDashboardData() {
+        fetch('{{ route("admin.dashboard.api-data") }}', {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json',
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            // Update stat numbers via data-stat attributes
+            document.querySelectorAll('[data-stat]').forEach(el => {
+                const key = el.getAttribute('data-stat');
+                if (data[key] !== undefined) {
+                    el.textContent = data[key];
+                }
+            });
+
+            // Update alert banner
+            const alertEl = document.querySelector('[data-alert-banner]');
+            if (alertEl) {
+                alertEl.innerHTML = `Sistem antrean live aktif: Hari ini tercatat <strong class="font-bold text-[#1B4F72]">${data.totalToday} tiket</strong> masuk dengan tingkat penyelesaian <strong class="font-bold text-[#1B4F72]">${data.completionRate}%</strong>.`;
+            }
+
+            // Update recent queues list
+            const queueList = document.querySelector('[data-recent-queues]');
+            if (queueList && data.recentQueues) {
+                if (data.recentQueues.length === 0) {
+                    queueList.innerHTML = '<div class="py-6 text-center text-slate-400 text-xs italic">Belum ada aktivitas antrean hari ini.</div>';
+                } else {
+                    queueList.innerHTML = data.recentQueues.map(q => {
+                        let statusBadge = '';
+                        if (q.status === 'completed') {
+                            statusBadge = '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold text-emerald-600 bg-emerald-50 border border-emerald-100">&bull; Completed</span>';
+                        } else if (q.status === 'serving' || q.status === 'calling') {
+                            statusBadge = '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold text-blue-600 bg-blue-50 border border-blue-100">&bull; Inprogress</span>';
+                        } else if (q.status === 'waiting') {
+                            statusBadge = '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold text-amber-600 bg-amber-50 border border-amber-100">&bull; Onhold</span>';
+                        } else {
+                            statusBadge = '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold text-rose-600 bg-rose-50 border border-rose-100">&bull; Skipped</span>';
+                        }
+                        return `<div class="flex items-center justify-between p-2.5 rounded-xl border border-slate-100 hover:bg-slate-50/80 transition duration-150 group">
+                            <div class="flex items-center space-x-3">
+                                <svg class="w-3.5 h-3.5 text-amber-400 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                                <div>
+                                    <span class="text-xs font-bold text-slate-800">${q.queue_number} - ${q.service_name}</span>
+                                    <span class="text-[10px] text-slate-400 ml-1">(${q.customer_name})</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-3.5">
+                                ${statusBadge}
+                                <div class="w-6 h-6 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-400">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                                </div>
+                            </div>
+                        </div>`;
+                    }).join('');
+                }
+            }
+
+            // Update recent activities / notifications
+            const actList = document.querySelector('[data-recent-activities]');
+            if (actList && data.recentActivities) {
+                if (data.recentActivities.length === 0) {
+                    actList.innerHTML = '<div class="col-span-4 py-6 text-center text-slate-400 text-xs italic">Belum ada notifikasi panggilan hari ini.</div>';
+                } else {
+                    actList.innerHTML = data.recentActivities.map(act => `
+                        <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 flex items-start space-x-3 hover:bg-slate-100/50 transition">
+                            <div class="w-7 h-7 rounded-full bg-orange-50 border border-orange-100 flex items-center justify-center font-extrabold text-[10px] text-orange-600 uppercase mt-0.5">${act.counter_initials}</div>
+                            <div class="flex-1">
+                                <p class="text-xs text-slate-700 leading-snug"><strong class="font-bold text-slate-900">${act.counter_name}</strong> memanggil <strong class="font-bold text-rose-500">${act.queue_number}</strong></p>
+                                <span class="text-[10px] text-slate-400 block mt-0.5">Hari ini pukul ${act.called_at}</span>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            }
+
+            console.log('✅ Dashboard data refreshed via AJAX');
+        })
+        .catch(err => console.error('Dashboard refresh error:', err));
+    }
+
     // Realtime Reverb WebSockets integration via Laravel Echo
     window.addEventListener('DOMContentLoaded', () => {
         if (window.Echo) {
             window.Echo.channel('queue-channel')
                 .listen('.queue.called', (e) => {
                     console.log('Realtime Call event received:', e);
+                    refreshDashboardData();
                 })
                 .listen('.queue.created', (e) => {
                     console.log('Realtime Created event received:', e);
+                    refreshDashboardData();
                 });
         } else {
             console.error('Laravel Echo not found. Realtime updates disabled.');

@@ -156,4 +156,102 @@ class DashboardController extends Controller
             'completionRate'
         ));
     }
+
+    /**
+     * Return dashboard data as JSON for AJAX realtime updates.
+     */
+    public function apiData()
+    {
+        $institutionId = Auth::user()->institution_id;
+        $today = Carbon::today();
+
+        $totalToday = Queue::where('institution_id', $institutionId)
+            ->whereDate('queue_date', $today)->count();
+        $servingNow = Queue::where('institution_id', $institutionId)
+            ->whereDate('queue_date', $today)
+            ->whereIn('status', ['calling', 'serving'])->count();
+        $waitingToday = Queue::where('institution_id', $institutionId)
+            ->whereDate('queue_date', $today)
+            ->where('status', 'waiting')->count();
+        $completedToday = Queue::where('institution_id', $institutionId)
+            ->whereDate('queue_date', $today)
+            ->where('status', 'completed')->count();
+        $skippedToday = Queue::where('institution_id', $institutionId)
+            ->whereDate('queue_date', $today)
+            ->where('status', 'skipped')->count();
+        $totalWeek = Queue::where('institution_id', $institutionId)
+            ->where('queue_date', '>=', Carbon::now()->startOfWeek())->count();
+        $totalMonth = Queue::where('institution_id', $institutionId)
+            ->whereMonth('queue_date', Carbon::now()->month)
+            ->whereYear('queue_date', Carbon::now()->year)->count();
+
+        $avgServiceTimeSec = Queue::where('institution_id', $institutionId)
+            ->whereDate('queue_date', $today)
+            ->where('status', 'completed')
+            ->whereNotNull('called_at')
+            ->whereNotNull('completed_at')
+            ->select(DB::raw('AVG(TIMESTAMPDIFF(SECOND, called_at, completed_at)) as avg_time'))
+            ->first()->avg_time ?? 0;
+        $avgServiceTime = $avgServiceTimeSec > 60 
+            ? floor($avgServiceTimeSec / 60) . 'm ' . ($avgServiceTimeSec % 60) . 's'
+            : round($avgServiceTimeSec) . 's';
+
+        $completionRate = $totalToday > 0 ? round(($completedToday / $totalToday) * 100) : 100;
+
+        // Counters with current queue info
+        $counters = Counter::where('institution_id', $institutionId)
+            ->whereNotNull('user_id')
+            ->with(['operator', 'serviceType'])
+            ->get()
+            ->map(function($counter) use ($today) {
+                $cq = Queue::where('counter_id', $counter->id)
+                    ->whereDate('queue_date', $today)
+                    ->whereIn('status', ['calling', 'serving'])->first();
+                $counter->current_queue_number = $cq ? $cq->queue_number : null;
+                $counter->served_count = Queue::where('counter_id', $counter->id)
+                    ->whereDate('queue_date', $today)
+                    ->where('status', 'completed')->count();
+                return $counter;
+            });
+
+        // Recent queues
+        $recentQueues = Queue::where('institution_id', $institutionId)
+            ->whereDate('queue_date', $today)
+            ->with(['serviceType'])
+            ->latest()->take(5)->get()
+            ->map(fn($q) => [
+                'queue_number' => $q->queue_number,
+                'service_name' => $q->serviceType->name ?? '-',
+                'customer_name' => $q->customer_name ?? 'Pelanggan',
+                'status' => $q->status,
+            ]);
+
+        // Recent activities
+        $recentActivities = Queue::where('institution_id', $institutionId)
+            ->whereDate('queue_date', $today)
+            ->whereNotNull('called_at')
+            ->with(['counter'])
+            ->orderBy('called_at', 'desc')->take(4)->get()
+            ->map(fn($act) => [
+                'counter_name' => $act->counter->name ?? 'Loket',
+                'counter_initials' => substr($act->counter->name ?? 'L', 0, 2),
+                'queue_number' => $act->queue_number,
+                'called_at' => $act->called_at ? $act->called_at->format('h:i A') : '09:00 AM',
+            ]);
+
+        return response()->json([
+            'totalToday' => $totalToday,
+            'servingNow' => $servingNow,
+            'waitingToday' => $waitingToday,
+            'completedToday' => $completedToday,
+            'skippedToday' => $skippedToday,
+            'totalWeek' => $totalWeek,
+            'totalMonth' => $totalMonth,
+            'avgServiceTime' => $avgServiceTime,
+            'completionRate' => $completionRate,
+            'counters' => $counters,
+            'recentQueues' => $recentQueues,
+            'recentActivities' => $recentActivities,
+        ]);
+    }
 }

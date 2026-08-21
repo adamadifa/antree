@@ -31,6 +31,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Admin Routes
     Route::middleware(['role:admin,superadmin'])->prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+        Route::get('/dashboard/api-data', [DashboardController::class, 'apiData'])->name('dashboard.api-data');
         Route::resource('service-types', \App\Http\Controllers\Admin\ServiceTypeController::class);
         Route::get('service-types/check-code', [\App\Http\Controllers\Admin\ServiceTypeController::class, 'checkCode'])->name('service-types.check-code');
         Route::resource('counters', \App\Http\Controllers\Admin\CounterController::class);
