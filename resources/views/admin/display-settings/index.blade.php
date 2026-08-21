@@ -56,6 +56,15 @@
                     </div>
                 </div>
 
+                {{-- Display Layout --}}
+                <div class="space-y-1.5 col-span-1">
+                    <label class="text-xs font-semibold text-slate-600 ml-1">Display Layout Style</label>
+                    <select name="display_layout" class="block w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-teal-50 focus:border-teal-500 transition duration-200 text-sm font-medium text-slate-700">
+                        <option value="default" {{ ($settings['display_layout'] ?? 'default') === 'default' ? 'selected' : '' }}>Layout Grid (Default)</option>
+                        <option value="list_counter" {{ ($settings['display_layout'] ?? '') === 'list_counter' ? 'selected' : '' }}>Layout List Counter (BNI Life Style)</option>
+                    </select>
+                </div>
+
                 {{-- Running Text --}}
                 <div class="space-y-1.5 md:col-span-2">
                     <label class="text-xs font-semibold text-slate-600 ml-1">Running Text (Marquee)</label>

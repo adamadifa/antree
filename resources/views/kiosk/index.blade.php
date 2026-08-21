@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Antree - Kiosk</title>
+    <title>{{ $institution->name ?? 'Antree' }} - Kiosk</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,107 +15,89 @@
     <style>
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: #F1F5F9;
-            background-image: radial-gradient(#CBD5E1 0.6px, transparent 0.6px);
-            background-size: 28px 28px;
+            background-color: #F8FAFC;
+            background-image: radial-gradient(#94A3B8 0.5px, transparent 0.5px);
+            background-size: 32px 32px;
             min-height: 100vh;
-            overflow: hidden;
+            overflow-x: hidden;
             color: #0F172A;
+            /* Make dots very subtle */
+            opacity: 0.99;
         }
 
+        /* Modern Gradient Service Card */
         .service-card {
             position: relative;
             overflow: hidden;
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
-            border: none;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
         }
 
         .service-card:hover {
-            transform: translateY(-6px) scale(1.02);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.6);
         }
 
         .service-card:active {
-            transform: translateY(-2px) scale(0.98);
+            transform: translateY(0);
         }
 
-        /* Ornament: Large circle in top-right */
-        .service-card .ornament-circle {
+        /* Subtle Inner Glow */
+        .service-card::before {
+            content: "";
             position: absolute;
-            top: -40px;
-            right: -40px;
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.15);
-            transition: transform 0.5s ease;
-        }
-        .service-card:hover .ornament-circle {
-            transform: scale(1.3);
-        }
-
-        /* Ornament: Small circle bottom-left */
-        .service-card .ornament-circle-sm {
-            position: absolute;
-            bottom: -20px;
-            left: -20px;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.1);
-        }
-
-        /* Ornament: Diagonal line pattern */
-        .service-card .ornament-lines {
-            position: absolute;
-            top: 0; right: 0; bottom: 0; left: 0;
-            background-image: repeating-linear-gradient(
-                -45deg,
-                transparent,
-                transparent 20px,
-                rgba(255,255,255,0.03) 20px,
-                rgba(255,255,255,0.03) 21px
-            );
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(180deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 100%);
             pointer-events: none;
         }
 
-        /* Thermal Ticket */
-        .thermal-ticket {
-            background-color: white;
-            position: relative;
-            filter: drop-shadow(0 25px 50px rgba(0,0,0,0.3));
-            width: 300px;
-            margin: 0 auto;
-        }
-        .thermal-ticket::after {
-            content: "";
+        /* Soft highlight flare (replaces AI floating circles) */
+        .card-flare {
             position: absolute;
-            bottom: -12px; left: 0; right: 0;
-            height: 12px;
-            background-repeat: repeat-x;
-            background-size: 24px 12px;
-            background-image: radial-gradient(circle at 12px 18px, transparent 15px, white 16px);
-            z-index: 10;
+            top: -50px;
+            right: -50px;
+            width: 150px;
+            height: 150px;
+            background: rgba(255, 255, 255, 0.3);
+            filter: blur(40px);
+            border-radius: 50%;
+            pointer-events: none;
         }
+
+        /* Clean Modern Receipt */
+        .receipt-card {
+            background-color: white;
+            border-radius: 1.5rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            width: 100%;
+            max-width: 320px;
+            margin: 0 auto;
+            border: 1px solid #E2E8F0;
+        }
+
         .printer-slot {
-            height: 12px;
-            background: #020617;
-            border-radius: 6px;
-            width: 320px;
-            margin: 0 auto -6px auto;
+            height: 8px;
+            background: #1E293B;
+            border-radius: 9999px;
+            width: 260px;
+            margin: 0 auto -4px auto;
             position: relative;
             z-index: 20;
-            box-shadow: inset 0 2px 8px rgba(0,0,0,0.9);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
         }
+
         .ticket-slide-down {
-            animation: ticketSlideDown 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation: ticketSlideDown 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
+
         @keyframes ticketSlideDown {
-            0% { transform: translateY(-110%); opacity: 0; }
-            5% { opacity: 1; }
+            0% { transform: translateY(-80%); opacity: 0; }
             100% { transform: translateY(0); opacity: 1; }
         }
+
         .fade-up {
             animation: fadeUp 0.6s ease-out both;
         }
@@ -125,66 +107,70 @@
         }
     </style>
 </head>
-<body class="antialiased flex flex-col items-center justify-center p-8 lg:p-12">
+<body class="antialiased flex flex-col items-center justify-center p-6 lg:p-10 select-none">
 
-    <!-- Header -->
-    <header class="w-full max-w-6xl flex items-center justify-between mb-14 fade-up">
-        <div class="flex items-center gap-5">
+    <!-- Unified Modern Header -->
+    <header class="w-full max-w-6xl bg-white/90 backdrop-blur-md px-6 py-4 rounded-3xl border border-slate-200/80 shadow-sm flex flex-wrap items-center justify-between mb-10 fade-up gap-4">
+        <!-- Left: Brand / Institution -->
+        <div class="flex items-center gap-4">
             @if(isset($institution) && $institution->logo_path)
-                <div class="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-lg p-1.5 border border-slate-100">
+                <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center p-1 border border-slate-100 flex-shrink-0">
                     <img src="{{ asset($institution->logo_path) }}" alt="Logo" class="w-full h-full object-contain rounded-lg">
                 </div>
             @else
-                <div class="w-12 h-12 bg-slate-900 rounded-xl flex items-center justify-center shadow-lg">
-                    <svg class="w-7 h-7 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                <div class="w-10 h-10 bg-slate-800 rounded-xl flex items-center justify-center text-white flex-shrink-0">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
                 </div>
             @endif
             <div>
-                <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">{{ $institution->name ?? 'Antree Kiosk' }}</h1>
+                <h1 class="text-lg font-bold text-slate-800 tracking-tight leading-tight">{{ $institution->name ?? 'Antree Kiosk' }}</h1>
                 <div class="flex items-center gap-2 mt-0.5">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <p class="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">System Online</p>
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                    <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Sistem Aktif</span>
                 </div>
             </div>
         </div>
-        <div class="flex items-center gap-4">
-            {{-- Printer Status --}}
-            <div id="printer-status-container" class="hidden md:flex items-center gap-2.5 bg-white/60 backdrop-blur-sm px-4 py-2.5 rounded-xl border border-white shadow-sm cursor-pointer hover:bg-white/80 transition-all group" onclick="openPrinterModal()">
-                <div class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center group-hover:bg-teal-50 transition-colors">
-                    <svg id="printer-icon" class="w-4 h-4 text-slate-400 group-hover:text-teal-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+
+        <!-- Right: Status & Clock Info -->
+        <div class="flex items-center gap-6 ml-auto">
+            {{-- Printer Status (Clean Pill Interaction) --}}
+            <div id="printer-status-container" class="hidden md:flex items-center gap-2.5 cursor-pointer group" onclick="openPrinterModal()">
+                <div class="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center border border-slate-100 group-hover:bg-slate-100 transition-colors">
+                    <svg id="printer-icon" class="w-4 h-4 text-slate-400 group-hover:text-slate-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
                 </div>
                 <div class="text-left">
-                    <p id="printer-status-text" class="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none mb-0.5">Printer Offline</p>
-                    <p id="printer-name-text" class="text-[10px] font-bold text-slate-800 leading-none">Not Connected</p>
+                    <p id="printer-status-text" class="text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-1">Printer Off</p>
+                    <p id="printer-name-text" class="text-[11px] font-bold text-slate-700 leading-none">Belum Terhubung</p>
                 </div>
-                <div id="printer-dot" class="w-1.5 h-1.5 rounded-full bg-slate-300"></div>
             </div>
 
-            <div class="text-right bg-white/60 backdrop-blur-sm px-5 py-2.5 rounded-xl border border-white shadow-sm">
-                <p id="current-time" class="text-xl font-extrabold text-slate-800 tabular-nums">00:00:00</p>
-                <p id="current-date" class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Fri, Mar 20, 2026</p>
+            {{-- Divider --}}
+            <div class="h-6 w-px bg-slate-200 hidden md:block"></div>
+
+            {{-- Clock (Clean Text Block) --}}
+            <div class="text-right">
+                <p id="current-time" class="text-xl font-extrabold text-slate-800 tabular-nums leading-none mb-1">00:00:00</p>
+                <p id="current-date" class="text-[9px] font-bold text-slate-500 uppercase tracking-widest leading-none">Jum, 20 Mar 2026</p>
             </div>
         </div>
     </header>
 
     <!-- Title -->
     <div class="text-center mb-10 fade-up" style="animation-delay:0.05s">
-        <h2 class="text-3xl font-extrabold text-slate-900 mb-2 tracking-tight">Select Your Service</h2>
-        <p class="text-slate-400 font-medium text-sm">Tap a service category to get your queue ticket</p>
+        <h2 class="text-3xl lg:text-4xl font-extrabold text-slate-800 mb-3 tracking-tight">Silakan Pilih Layanan</h2>
+        <p class="text-slate-500 font-medium text-sm lg:text-base">Sentuh pada salah satu kategori untuk mencetak nomor antrean Anda</p>
     </div>
 
-    <!-- Service Grid: 3 columns, compact height, colored BG -->
+    <!-- Service Grid -->
     <main class="w-full max-w-6xl fade-up" style="animation-delay:0.1s">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @foreach($services as $index => $service)
             <button onclick="takeTicket({{ $service->id }}, '{{ $service->name }}')" 
-                    class="service-card rounded-2xl text-left group"
-                    style="background: linear-gradient(135deg, {{ $service->color }}E6, {{ $service->color }}CC); animation-delay: {{ $index * 0.05 }}s">
+                    class="service-card rounded-2xl text-left group overflow-hidden"
+                    style="background: linear-gradient(135deg, {{ $service->color }}dd, {{ $service->color }}f2); animation-delay: {{ $index * 0.05 }}s">
                 
-                {{-- Ornaments --}}
-                <div class="ornament-circle"></div>
-                <div class="ornament-circle-sm"></div>
-                <div class="ornament-lines"></div>
+                {{-- Clean Soft Highlight --}}
+                <div class="card-flare"></div>
 
                 <div class="relative z-10 flex items-center gap-5 px-7 py-6">
                     {{-- Icon --}}
@@ -195,13 +181,13 @@
                     {{-- Text Content --}}
                     <div class="flex-1 min-w-0">
                         <h3 class="text-lg font-extrabold text-white mb-0.5 leading-tight truncate">{{ $service->name }}</h3>
-                        <p class="text-[10px] font-bold text-white uppercase tracking-widest">Code: {{ $service->code }}</p>
+                        <p class="text-[10px] font-bold text-white/90 uppercase tracking-widest">KODE: {{ $service->code }}</p>
                     </div>
 
                     {{-- Stats --}}
-                    <div class="flex-shrink-0 text-right pl-4 border-l border-white/30">
-                        <p class="text-[8px] font-black text-white uppercase tracking-widest mb-0.5">Wait</p>
-                        <p class="text-lg font-extrabold text-white tabular-nums"><span id="service-wait-{{ $service->id }}">{{ $service->wait_time }}</span><span class="text-[9px] text-white ml-0.5">m</span></p>
+                    <div class="flex-shrink-0 text-right pl-4 border-l border-white/20">
+                        <p class="text-[8px] font-black text-white/80 uppercase tracking-widest mb-0.5">TUNGGU</p>
+                        <p class="text-lg font-extrabold text-white tabular-nums"><span id="service-wait-{{ $service->id }}">{{ $service->wait_time }}</span><span class="text-[9px] text-white/90 ml-0.5">m</span></p>
                     </div>
 
                     {{-- Arrow --}}
@@ -217,143 +203,144 @@
     <!-- Footer: Live Status -->
     <footer class="mt-14 w-full max-w-6xl fade-up" style="animation-delay:0.15s">
         <div class="flex flex-col items-center">
-            <div class="flex items-center gap-3 mb-4">
-                <div class="h-px w-10 bg-slate-200"></div>
-                <p class="text-[9px] font-black text-slate-400 uppercase tracking-[0.3em]">Live Queue Status</p>
-                <div class="h-px w-10 bg-slate-200"></div>
+            <div class="flex items-center gap-3 mb-5">
+                <div class="h-px w-10 bg-slate-300"></div>
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Antrean Sedang Dilayani</p>
+                <div class="h-px w-10 bg-slate-300"></div>
             </div>
-            <div class="flex flex-wrap justify-center gap-2.5">
+            <div class="flex flex-wrap justify-center gap-3">
                 @foreach($services as $service)
-                <div class="flex items-center gap-2 bg-white px-3 py-1.5 rounded-lg text-[9px] font-bold shadow-sm border border-slate-100">
-                    <span class="w-1.5 h-1.5 rounded-full" style="background-color: {{ $service->color }}"></span>
+                <div class="flex items-center gap-2.5 bg-white px-4 py-2 rounded-xl text-xs font-bold shadow-sm border border-slate-100">
+                    <span class="w-2 h-2 rounded-full" style="background-color: {{ $service->color }}"></span>
                     <span class="text-slate-500">{{ $service->code }}:</span>
-                    <span id="service-queue-{{ $service->id }}" class="text-slate-900 font-extrabold">{{ $service->active_queue->queue_number ?? '-' }}</span>
+                    <span id="service-queue-{{ $service->id }}" class="text-slate-800 font-extrabold">{{ $service->active_queue->queue_number ?? '-' }}</span>
                 </div>
                 @endforeach
             </div>
-            <p class="mt-6 text-[10px] font-semibold text-slate-400">&copy; {{ date('Y') }} {{ $institution->footer_text ?? 'Antree Queue Management' }}</p>
+            <p class="mt-8 text-[11px] font-semibold text-slate-400">&copy; {{ date('Y') }} {{ $institution->footer_text ?? 'Antree - Sistem Antrean Mandiri' }}</p>
         </div>
     </footer>
 
     <!-- Print Modal -->
-    <div id="print-modal" class="fixed inset-0 z-[100] hidden flex flex-col items-center justify-center p-8 bg-slate-900/90 backdrop-blur-md transition-all duration-500">
+    <div id="print-modal" class="fixed inset-0 z-[100] hidden flex flex-col items-center justify-center p-6 bg-slate-900/60 backdrop-blur-sm transition-all duration-300">
         
         <div id="printing-state" class="text-center">
-            <div class="w-20 h-20 border-4 border-teal-500/10 border-t-teal-500 rounded-full animate-spin mx-auto mb-8"></div>
-            <h3 class="text-3xl font-black text-white mb-2 tracking-tight">Printing Your Ticket</h3>
-            <p class="text-teal-400 font-bold text-[10px]">Processing...</p>
+            <div class="w-16 h-16 border-4 border-white/20 border-t-white rounded-full animate-spin mx-auto mb-6"></div>
+            <h3 class="text-2xl font-black text-white mb-2 tracking-tight drop-shadow-md">Mencetak Tiket...</h3>
+            <p class="text-white/80 font-semibold text-xs drop-shadow-sm">Harap tunggu sebentar</p>
         </div>
 
         <div id="ticket-area" class="hidden flex flex-col items-center w-full">
             <div class="printer-slot"></div>
-            <div id="actual-ticket" class="thermal-ticket p-10 text-left ticket-slide-down">
-                <div class="text-center border-b-2 border-dashed border-slate-100 pb-6 mb-6">
+            <div id="actual-ticket" class="receipt-card p-8 text-left ticket-slide-down">
+                
+                <div class="text-center border-b-2 border-dashed border-slate-200 pb-5 mb-5">
                     @if(isset($institution) && $institution->logo_path)
-                        <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center mx-auto mb-3 p-1 border border-slate-100 shadow-sm">
+                        <div class="w-12 h-12 bg-white rounded-xl flex items-center justify-center mx-auto mb-3 p-1 border border-slate-100 shadow-sm">
                             <img src="{{ asset($institution->logo_path) }}" alt="Logo" class="w-full h-full object-contain">
                         </div>
                     @else
-                        <div class="w-10 h-10 bg-slate-900 rounded-lg flex items-center justify-center mx-auto mb-3">
-                            <svg class="w-5 h-5 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                        <div class="w-12 h-12 bg-slate-900 rounded-xl flex items-center justify-center mx-auto mb-3">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
                         </div>
                     @endif
-                    <h4 class="text-[13px] font-bold text-slate-900 mb-0.5">{{ $institution->name ?? 'Public Service' }}</h4>
-                    <p class="text-[10px] font-semibold text-slate-400">Official Queue Ticket</p>
+                    <h4 class="text-sm font-extrabold text-slate-800 mb-0.5">{{ $institution->name ?? 'Layanan Publik' }}</h4>
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Tiket Antrean Resmi</p>
                 </div>
 
-                <div class="text-center mb-8">
-                    <p class="text-[10px] font-bold text-slate-500 mb-2">Queue Number</p>
-                    <h5 id="res-number" class="text-6xl font-black text-slate-900 tracking-tighter mb-2">A-001</h5>
-                    <div class="inline-block px-3.5 py-1 bg-slate-900 text-white text-[10px] font-bold rounded-full" id="res-service-name">
+                <div class="text-center mb-6">
+                    <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5">Nomor Antrean Anda</p>
+                    <h5 id="res-number" class="text-5xl font-black text-slate-900 tracking-tight mb-2">A-001</h5>
+                    <div class="inline-block px-4 py-1 bg-slate-100 border border-slate-200 text-slate-700 text-xs font-bold rounded-lg" id="res-service-name">
                         Customer Service
                     </div>
                 </div>
 
-                <div class="space-y-2.5 mb-8 bg-slate-50 p-4 rounded-xl border border-slate-100">
+                <div class="space-y-2 mb-6 bg-slate-50 p-4 rounded-xl border border-slate-100 text-xs">
                     <div class="flex justify-between items-center">
-                        <span class="text-[10px] font-semibold text-slate-500">Wait</span>
-                        <span class="text-[10.5px] font-bold text-slate-800" id="res-wait">~ 15 Mins</span>
+                        <span class="font-bold text-slate-500">Estimasi Tunggu</span>
+                        <span class="font-extrabold text-slate-800" id="res-wait">~ 15 Menit</span>
                     </div>
                     <div class="flex justify-between items-center">
-                        <span class="text-[10px] font-semibold text-slate-500">Issued</span>
-                        <span class="text-[10.5px] font-bold text-slate-800"><span id="res-date">Mar 20</span>, <span id="res-time">10:45</span></span>
+                        <span class="font-bold text-slate-500">Waktu Cetak</span>
+                        <span class="font-extrabold text-slate-800"><span id="res-date">20 Mar</span>, <span id="res-time">10:45</span></span>
                     </div>
                 </div>
 
-                <div class="text-center border-t-2 border-dashed border-slate-100 pt-5">
-                    <p class="text-[9px] font-medium text-slate-500 mb-4 italic">Please wait for your number to be called.</p>
-                    <div class="flex justify-center flex-col items-center gap-1 opacity-50">
+                <div class="text-center border-t-2 border-dashed border-slate-200 pt-5">
+                    <p class="text-[10px] font-bold text-slate-500 mb-4">Silakan menunggu nomor Anda dipanggil.</p>
+                    <!-- Simulated Barcode -->
+                    <div class="flex justify-center flex-col items-center gap-1 opacity-60">
                         <div class="flex gap-0.5">
-                            @for($i=0; $i<30; $i++)
-                            <div class="w-0.5 bg-slate-900" style="height: {{ rand(15, 28) }}px;"></div>
+                            @for($i=0; $i<35; $i++)
+                            <div class="w-[2px] bg-slate-800" style="height: {{ rand(15, 24) }}px;"></div>
                             @endfor
                         </div>
                     </div>
                 </div>
             </div>
 
-            <button onclick="closeModal()" class="mt-14 px-10 py-3.5 bg-teal-500 text-white font-bold rounded-2xl shadow-xl shadow-teal-500/20 hover:bg-teal-600 transition duration-200 text-sm">
-                Done
+            <button onclick="closeModal()" class="mt-8 px-10 py-3.5 bg-slate-900 text-white font-bold rounded-2xl shadow-xl hover:bg-slate-800 transition duration-200 text-sm w-full max-w-[320px]">
+                Selesai
             </button>
         </div>
     </div>
 
     <!-- Printer Settings Modal -->
-    <div id="printer-modal" class="fixed inset-0 z-[110] hidden flex flex-col items-center justify-center p-8 bg-slate-900/90 backdrop-blur-md transition-all duration-500">
-        <div class="bg-white rounded-3xl p-8 w-full max-w-md shadow-2xl">
+    <div id="printer-modal" class="fixed inset-0 z-[110] hidden flex flex-col items-center justify-center p-6 bg-slate-900/60 backdrop-blur-sm transition-all duration-300">
+        <div class="bg-white rounded-[2rem] p-8 w-full max-w-md shadow-2xl">
             <div class="flex items-center justify-between mb-8">
                 <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 bg-slate-900 rounded-xl flex items-center justify-center shadow-lg">
-                        <svg class="w-6 h-6 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+                    <div class="w-12 h-12 bg-slate-100 border border-slate-200 rounded-xl flex items-center justify-center">
+                        <svg class="w-6 h-6 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
                     </div>
                     <div>
-                        <h3 class="text-xl font-black text-slate-900 tracking-tight">Printer Settings</h3>
-                        <p class="text-[9px] font-bold text-slate-400 uppercase tracking-[0.2em]">Bluetooth Thermal Printer</p>
+                        <h3 class="text-xl font-extrabold text-slate-800 tracking-tight">Pengaturan Printer</h3>
+                        <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Bluetooth Thermal</p>
                     </div>
                 </div>
-                <button onclick="closePrinterModal()" class="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 hover:text-slate-900 hover:bg-slate-100 transition">
+                <button onclick="closePrinterModal()" class="w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 hover:text-slate-800 hover:bg-slate-100 transition">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
             </div>
 
             <div class="space-y-6">
-                {{-- Connection Status Card --}}
                 <div id="printer-connection-card" class="p-6 rounded-2xl bg-slate-50 border border-slate-100 flex flex-col items-center text-center">
-                    <div id="printer-pulse" class="w-16 h-16 rounded-full bg-slate-200 flex items-center justify-center mb-4">
-                        <svg id="printer-modal-icon" class="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.343 6.343c5.857-5.858 15.355-5.858 21.213 0"/></svg>
+                    <div id="printer-pulse" class="w-14 h-14 rounded-full bg-slate-200 flex items-center justify-center mb-4">
+                        <svg id="printer-modal-icon" class="w-7 h-7 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.343 6.343c5.857-5.858 15.355-5.858 21.213 0"/></svg>
                     </div>
-                    <h4 id="printer-modal-status" class="text-lg font-extrabold text-slate-900 mb-1">No Printer Connected</h4>
-                    <p id="printer-modal-desc" class="text-sm text-slate-500 mb-6">Connect to a Bluetooth thermal printer to enable automatic ticket printing.</p>
+                    <h4 id="printer-modal-status" class="text-base font-extrabold text-slate-800 mb-1">Printer Tidak Terhubung</h4>
+                    <p id="printer-modal-desc" class="text-xs text-slate-500 mb-6 leading-relaxed">Hubungkan ke printer cetak thermal Bluetooth untuk mencetak tiket antrean secara otomatis.</p>
                     
-                    <button id="btn-connect-printer" onclick="connectPrinter()" class="w-full py-4 bg-slate-900 text-white font-black rounded-xl shadow-xl hover:bg-slate-800 transition duration-300 flex items-center justify-center gap-3 uppercase tracking-widest text-[10px]">
+                    <button id="btn-connect-printer" onclick="connectPrinter()" class="w-full py-3.5 bg-slate-900 text-white font-bold rounded-xl shadow-lg hover:bg-slate-800 transition duration-300 flex items-center justify-center gap-3 uppercase tracking-wider text-[10px]">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.343 6.343c5.857-5.858 15.355-5.858 21.213 0"/></svg>
-                        Scan For Printer
+                        Cari Printer Bluetooth
                     </button>
 
-                    <button id="btn-disconnect-printer" onclick="disconnectPrinter()" class="hidden w-full py-4 bg-white text-rose-500 border-2 border-rose-100 font-black rounded-xl hover:bg-rose-50 transition duration-300 flex items-center justify-center gap-3 uppercase tracking-widest text-[10px]">
+                    <button id="btn-disconnect-printer" class="hidden w-full py-3.5 bg-rose-50 text-rose-600 border border-rose-200 font-bold rounded-xl hover:bg-rose-100 transition duration-300 flex items-center justify-center gap-3 uppercase tracking-wider text-[10px]" onclick="disconnectPrinter()">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        Disconnect Printer
+                        Putuskan Koneksi
                     </button>
                 </div>
 
-                <div class="p-4 rounded-xl bg-teal-50 border border-teal-100 flex gap-4">
-                    <div class="w-8 h-8 rounded-lg bg-teal-500 flex-shrink-0 flex items-center justify-center">
-                        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <div class="p-4 rounded-xl bg-slate-50 border border-slate-100 flex gap-4 items-start">
+                    <div class="w-7 h-7 rounded-lg bg-slate-200 flex-shrink-0 flex items-center justify-center mt-0.5">
+                        <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                     </div>
-                    <p class="text-[10px] font-bold text-teal-700 leading-relaxed uppercase tracking-wider">Ensure your thermal printer is turned on and Bluetooth is discoverable on this device.</p>
+                    <p class="text-[10px] font-bold text-slate-500 leading-relaxed uppercase tracking-wider">Pastikan printer thermal dalam posisi menyala dan Bluetooth perangkat ini aktif.</p>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Core Scripting Logic (Preserved 100%) -->
     <script>
-        // --- Bluetooth Printer Implementation ---
         class BluetoothPrinter {
             constructor() {
                 this.device = null;
                 this.characteristic = null;
                 this.connected = false;
-                this.printerName = 'Not Connected';
+                this.printerName = 'Belum Terhubung';
                 this.onStatusChange = null;
 
                 // ESC/POS Commands
@@ -363,14 +350,29 @@
                     left: [0x1B, 0x61, 0x00],
                     boldOn: [0x1B, 0x45, 0x01],
                     boldOff: [0x1B, 0x45, 0x00],
-                    doubleOn: [0x1B, 0x47, 0x01], // Double print (Emphasis)
+                    doubleOn: [0x1B, 0x47, 0x01],
                     doubleOff: [0x1B, 0x47, 0x00],
                     doubleSize: [0x1D, 0x21, 0x11],
                     normalSize: [0x1D, 0x21, 0x00],
-                    density: [0x12, 0x23, 0xFF], // Max density (standard on many printers)
+                    density: [0x12, 0x23, 0xFF],
                     feed: [0x0A],
                     cut: [0x1D, 0x56, 0x41]
                 };
+            }
+
+            async getService(server) {
+                try {
+                    return await server.getPrimaryService('000018f0-0000-1000-8000-00805f9b34fb');
+                } catch (e) {
+                    console.warn('Primary service lookup failed, forcing reconnect and trying fallback...', e);
+                    // Explicitly reconnect to establish a fresh GATT server session
+                    const freshServer = await this.device.gatt.connect();
+                    const services = await freshServer.getPrimaryServices();
+                    if (services.length === 0) {
+                        throw new Error('No services found on this device');
+                    }
+                    return services[0];
+                }
             }
 
             async connect() {
@@ -381,30 +383,49 @@
                             { services: ['000018f0-0000-1000-8000-00805f9b34fb'] },
                             { services: ['49535343-fe7d-4ae5-8fa9-9fafd205e455'] },
                             { namePrefix: 'TP' },
+                            { namePrefix: 'RP' },
                             { namePrefix: 'RPP' },
                             { namePrefix: 'BlueTooth' },
-                            { namePrefix: 'MPT' }
+                            { namePrefix: 'MPT' },
+                            { namePrefix: 'Blueprint' }
                         ],
-                        optionalServices: ['000018f0-0000-1000-8000-00805f9b34fb', '0000ff00-0000-1000-8000-00805f9b34fb']
+                        optionalServices: [
+                            '000018f0-0000-1000-8000-00805f9b34fb', 
+                            '0000ff00-0000-1000-8000-00805f9b34fb',
+                            '00001101-0000-1000-8000-00805f9b34fb',
+                            '0000e000-0000-1000-8000-00805f9b34fb',
+                            '49535343-fe7d-4ae5-8fa9-9fafd205e455'
+                        ]
                     });
 
                     this.printerName = this.device.name;
                     console.log('Connecting to GATT Server...');
-                    const server = await this.device.gatt.connect();
+                    let server = await this.device.gatt.connect();
 
-                    console.log('Getting Service...');
-                    // Try common printer services
-                    let service;
-                    try {
-                        service = await server.getPrimaryService('000018f0-0000-1000-8000-00805f9b34fb');
-                    } catch (e) {
-                        const services = await server.getPrimaryServices();
-                        service = services[0];
+                    // Wait for GATT session to stabilize (Windows needs this)
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+
+                    // Retry service discovery up to 3 times
+                    let service = null;
+                    for (let attempt = 1; attempt <= 3; attempt++) {
+                        try {
+                            console.log(`Getting Service... (attempt ${attempt})`);
+                            if (!this.device.gatt.connected) {
+                                console.log('GATT dropped, reconnecting...');
+                                server = await this.device.gatt.connect();
+                                await new Promise(resolve => setTimeout(resolve, 800));
+                            }
+                            service = await this.getService(server);
+                            break;
+                        } catch (retryErr) {
+                            console.warn(`Service discovery attempt ${attempt} failed:`, retryErr);
+                            if (attempt === 3) throw retryErr;
+                            await new Promise(resolve => setTimeout(resolve, 1000));
+                        }
                     }
 
                     console.log('Getting Characteristic...');
                     const characteristics = await service.getCharacteristics();
-                    // Find the first characteristic that supports writing
                     this.characteristic = characteristics.find(c => c.properties.write || c.properties.writeWithoutResponse);
 
                     if (!this.characteristic) {
@@ -416,7 +437,6 @@
                     
                     if (this.onStatusChange) this.onStatusChange(true);
                     
-                    // Save to local storage for persistence
                     localStorage.setItem('antree_printer_auto_connect', 'true');
                     
                     return true;
@@ -429,56 +449,33 @@
             async autoConnect() {
                 console.log('--- Checking Auto-Connect ---');
                 if (localStorage.getItem('antree_printer_auto_connect') !== 'true') {
-                    console.log('Auto-connect not enabled in settings.');
                     return false;
                 }
                 
-                if (!navigator.bluetooth) {
-                    console.error('Web Bluetooth not supported in this browser.');
-                    return false;
-                }
-
-                if (!navigator.bluetooth.getDevices) {
-                    console.warn('getDevices() not supported. Auto-connect might require a manual gesture.');
+                if (!navigator.bluetooth || !navigator.bluetooth.getDevices) {
                     return false;
                 }
 
                 try {
                     const devices = await navigator.bluetooth.getDevices();
-                    console.log('Available permitted devices:', devices.length);
-                    
                     if (devices.length > 0) {
                         const device = devices[0];
-                        console.log('Attempting to reconnect to:', device.name);
                         
                         this.device = device;
                         this.printerName = device.name;
                         
-                        // Handle server connection
                         const server = await device.gatt.connect();
-                        console.log('GATT Connected');
-                        
-                        let service;
-                        try {
-                            service = await server.getPrimaryService('000018f0-0000-1000-8000-00805f9b34fb');
-                        } catch (e) {
-                            const services = await server.getPrimaryServices();
-                            service = services[0];
-                        }
-                        console.log('Service found');
+                        const service = await this.getService(server);
 
                         const characteristics = await service.getCharacteristics();
                         this.characteristic = characteristics.find(c => c.properties.write || c.properties.writeWithoutResponse);
 
                         if (this.characteristic) {
-                            console.log('Characteristic found, reconnection SUCCESS');
                             this.connected = true;
                             this.device.addEventListener('gattserverdisconnected', () => this.handleDisconnect());
                             if (this.onStatusChange) this.onStatusChange(true);
                             return true;
                         }
-                    } else {
-                        console.log('No permitted devices found. You may need to connect manually once first.');
                     }
                 } catch (error) {
                     console.error('Auto-connect error:', error);
@@ -489,7 +486,7 @@
             handleDisconnect() {
                 this.connected = false;
                 this.characteristic = null;
-                this.printerName = 'Not Connected';
+                this.printerName = 'Belum Terhubung';
                 if (this.onStatusChange) this.onStatusChange(false);
             }
 
@@ -507,44 +504,37 @@
                     const encoder = new TextEncoder();
                     let commands = [];
 
-                    // Start Building Buffer
                     commands.push(...this.esc.init);
-                    commands.push(...this.esc.density); // Set higher density
-                    commands.push(...this.esc.doubleOn); // Enable double strike for sharpness
+                    commands.push(...this.esc.density);
+                    commands.push(...this.esc.doubleOn);
                     commands.push(...this.esc.center);
                     
-                    // Institution Name
                     commands.push(...this.esc.boldOn);
                     commands.push(...encoder.encode(data.institution_name.toUpperCase() + "\n"));
                     commands.push(...this.esc.boldOff);
-                    commands.push(...encoder.encode("Official Queue Ticket\n\n"));
+                    commands.push(...encoder.encode("TIKET ANTREAN RESMI\n\n"));
 
-                    // Queue Number
-                    commands.push(...encoder.encode("Queue Number\n\n"));
+                    commands.push(...encoder.encode("Nomor Antrean\n\n"));
                     commands.push(...this.esc.doubleSize);
                     commands.push(...this.esc.boldOn);
                     commands.push(...encoder.encode(data.queue_number + "\n\n"));
                     commands.push(...this.esc.boldOff);
-                    commands.push(...this.esc.doubleOn); // Re-enable if doubleSize affects it
+                    commands.push(...this.esc.doubleOn);
                     commands.push(...this.esc.normalSize);
 
-                    // Service Name
                     commands.push(...this.esc.boldOn);
                     commands.push(...encoder.encode(data.service_name.toUpperCase() + "\n\n"));
                     commands.push(...this.esc.boldOff);
 
-                    // Details
                     commands.push(...this.esc.left);
-                    commands.push(...encoder.encode(`Wait: ~ ${data.wait_time} MINS\n`));
-                    commands.push(...encoder.encode(`Date: ${data.date}, ${data.time}\n`));
+                    commands.push(...encoder.encode(`Estimasi: ~ ${data.wait_time} MENIT\n`));
+                    commands.push(...encoder.encode(`Waktu: ${data.date}, ${data.time}\n`));
                     commands.push(...encoder.encode("--------------------------------\n"));
                     
-                    // Footer
                     commands.push(...this.esc.center);
-                    commands.push(...encoder.encode("Please wait for your number\nto be called.\n\n\n\n"));
+                    commands.push(...encoder.encode("Silakan menunggu nomor Anda\ndipanggil.\n\n\n\n"));
                     commands.push(...this.esc.cut);
 
-                    // Send in chunks of 512 bytes (common limit for some BT printers)
                     const buffer = new Uint8Array(commands);
                     const chunkSize = 512;
                     for (let i = 0; i < buffer.length; i += chunkSize) {
@@ -560,17 +550,13 @@
             }
         }
 
-        // --- View Logic ---
         const printer = new BluetoothPrinter();
 
         printer.onStatusChange = (isConnected) => {
             const container = document.getElementById('printer-status-container');
             const statusText = document.getElementById('printer-status-text');
             const nameText = document.getElementById('printer-name-text');
-            const dot = document.getElementById('printer-dot');
-            const icon = document.getElementById('printer-icon');
             
-            // Modal elements
             const modalStatus = document.getElementById('printer-modal-status');
             const modalDesc = document.getElementById('printer-modal-desc');
             const modalIcon = document.getElementById('printer-modal-icon');
@@ -581,42 +567,33 @@
             if (isConnected) {
                 container.classList.remove('hidden');
                 statusText.innerText = 'Printer Online';
-                statusText.classList.replace('text-slate-400', 'text-teal-500');
+                statusText.classList.replace('text-slate-500', 'text-emerald-500');
                 nameText.innerText = printer.printerName;
-                dot.classList.replace('bg-slate-300', 'bg-teal-500');
-                dot.classList.add('animate-pulse');
-                icon.classList.replace('text-slate-400', 'text-teal-500');
 
-                modalStatus.innerText = 'Printer Connected';
-                modalDesc.innerText = `Connected to ${printer.printerName}. Tickets will be printed automatically.`;
-                modalIcon.classList.replace('text-slate-400', 'text-teal-500');
-                pulse.classList.replace('bg-slate-200', 'bg-teal-50');
+                modalStatus.innerText = 'Printer Terhubung';
+                modalDesc.innerText = `Terhubung ke ${printer.printerName}. Tiket akan dicetak secara otomatis.`;
+                modalIcon.classList.replace('text-slate-400', 'text-emerald-500');
+                pulse.classList.replace('bg-slate-200', 'bg-emerald-50');
                 
                 btnConnect.classList.add('hidden');
                 btnDisconnect.classList.remove('hidden');
             } else {
                 container.classList.add('hidden');
-                statusText.innerText = 'Printer Offline';
-                statusText.classList.replace('text-teal-500', 'text-slate-400');
-                nameText.innerText = 'Not Connected';
-                dot.classList.replace('bg-teal-500', 'bg-slate-300');
-                dot.classList.remove('animate-pulse');
-                icon.classList.replace('text-teal-500', 'text-slate-400');
+                statusText.innerText = 'Printer Off';
+                statusText.classList.replace('text-emerald-500', 'text-slate-500');
+                nameText.innerText = 'Belum Terhubung';
 
-                modalStatus.innerText = 'No Printer Connected';
-                modalDesc.innerText = 'Connect to a Bluetooth thermal printer to enable automatic ticket printing.';
-                modalIcon.classList.replace('text-teal-500', 'text-slate-400');
-                pulse.classList.replace('bg-teal-50', 'bg-slate-200');
+                modalStatus.innerText = 'Printer Tidak Terhubung';
+                modalDesc.innerText = 'Hubungkan ke printer cetak thermal Bluetooth untuk mencetak tiket antrean secara otomatis.';
+                modalIcon.classList.replace('text-emerald-500', 'text-slate-400');
+                pulse.classList.replace('bg-emerald-50', 'bg-slate-200');
 
                 btnConnect.classList.remove('hidden');
                 btnDisconnect.classList.add('hidden');
             }
         };
 
-        // Auto-reconnect on page load
         window.addEventListener('load', () => {
-            console.log('Kiosk Page Loaded, initializing printer check...');
-            // Check every 500ms if Bluetooth is ready or try a few times
             let attempts = 0;
             const checkBluetooth = async () => {
                 const connected = await printer.autoConnect();
@@ -625,7 +602,6 @@
                     setTimeout(checkBluetooth, 1500);
                 }
             };
-            
             setTimeout(checkBluetooth, 1000);
         });
 
@@ -641,7 +617,7 @@
             const btn = document.getElementById('btn-connect-printer');
             const originalText = btn.innerHTML;
             btn.disabled = true;
-            btn.innerHTML = '<span class="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></span> Scanning...';
+            btn.innerHTML = '<span class="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></span> Memindai...';
 
             const success = await printer.connect();
             
@@ -651,20 +627,20 @@
             if (success) {
                 setTimeout(closePrinterModal, 1000);
             } else {
-                alert('Bluetooth connection failed. Make sure Bluetooth is enabled and the printer is discoverable.');
+                alert('Gagal terhubung. Pastikan Bluetooth aktif dan printer siap.');
             }
         }
 
         function disconnectPrinter() {
-            if (confirm('Disconnect from printer?')) {
+            if (confirm('Putuskan koneksi dari printer?')) {
                 printer.disconnect();
             }
         }
 
         function updateClock() {
             const now = new Date();
-            document.getElementById('current-time').innerText = now.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
-            document.getElementById('current-date').innerText = now.toLocaleDateString('en-US', { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' });
+            document.getElementById('current-time').innerText = now.toLocaleTimeString('id-ID', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            document.getElementById('current-date').innerText = now.toLocaleDateString('id-ID', { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' });
         }
         setInterval(updateClock, 1000);
         updateClock();
@@ -689,16 +665,11 @@
             .then(r => r.json())
             .then(async data => {
                 if (data.success) {
-                    // Start physical printing if connected
                     if (printer.connected) {
-                        const printSuccess = await printer.printTicket({
+                        await printer.printTicket({
                             ...data.data,
                             institution_name: "{{ $institution->name ?? 'Antree' }}"
                         });
-                        
-                        if (!printSuccess) {
-                            console.warn('Physical printing failed, showing digital ticket only.');
-                        }
                     }
 
                     setTimeout(() => {
@@ -708,9 +679,8 @@
                         document.getElementById('res-service-name').innerText = data.data.service_name;
                         document.getElementById('res-date').innerText = data.data.date;
                         document.getElementById('res-time').innerText = data.data.time;
-                        document.getElementById('res-wait').innerText = "~ " + data.data.wait_time + " MINS";
+                        document.getElementById('res-wait').innerText = "~ " + data.data.wait_time + " Menit";
 
-                        // Update local UI state
                         const footerQueue = document.getElementById(`service-queue-${serviceId}`);
                         if (footerQueue) footerQueue.innerText = data.data.queue_number;
                         
@@ -721,7 +691,7 @@
             })
             .catch((err) => {
                 console.error(err);
-                alert("System error. Please contact helpdesk.");
+                alert("Terjadi kesalahan jaringan.");
                 modal.classList.add('hidden');
             });
         }

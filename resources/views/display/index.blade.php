@@ -96,12 +96,12 @@
 
     <div class="display-layout">
 
-        <!-- ===== HEADER (SOLID PRIMARY COLOR, FIXED FULL-WIDTH, NO ROUNDED CORNERS) ===== -->
-        <header class="fixed top-0 left-0 right-0 w-full px-6 py-4 flex items-center justify-between border-b shadow-lg transition duration-200 z-40"
-                style="background: var(--primary); border-color: rgba(255, 255, 255, 0.15); height: 80px;">
+        <!-- ===== HEADER (DEEP SLATE-900 WITH BOLD PRIMARY COLOR BOTTOM ACCENT BORDER) ===== -->
+        <header class="fixed top-0 left-0 right-0 w-full px-6 py-4 flex items-center justify-between shadow-md transition duration-200 z-40"
+                style="background: #0f172a; border-bottom: 3px solid var(--primary); height: 80px;">
             <div class="flex items-center gap-4">
                 @if(!empty($settings['logo_url']))
-                    <div class="w-12 h-12 bg-white rounded-xl p-1.5 flex items-center justify-center border border-white/20 shadow-sm">
+                    <div class="w-12 h-12 bg-white rounded-xl p-1.5 flex items-center justify-center border border-slate-700/50 shadow-sm">
                         @if(str_starts_with($settings['logo_url'], 'http://') || str_starts_with($settings['logo_url'], 'https://'))
                             <img src="{{ $settings['logo_url'] }}" class="h-full w-full object-contain" alt="Logo">
                         @elseif(str_starts_with($settings['logo_url'], 'storage/'))
@@ -111,7 +111,7 @@
                         @endif
                     </div>
                 @elseif(isset($institution) && $institution->logo_path)
-                    <div class="w-12 h-12 bg-white rounded-xl p-1.5 flex items-center justify-center border border-white/20 shadow-sm">
+                    <div class="w-12 h-12 bg-white rounded-xl p-1.5 flex items-center justify-center border border-slate-700/50 shadow-sm">
                         <img src="{{ asset($institution->logo_path) }}" class="h-full w-full object-contain" alt="Logo">
                     </div>
                 @else
@@ -120,15 +120,14 @@
                     </div>
                 @endif
                 <div>
-                    <h1 class="text-lg font-extrabold tracking-tight text-white text-glow-white leading-none mb-1.5">{{ $institution->app_name ?? $settings['company_name'] ?? $settings['name'] ?? 'Antree' }}</h1>
-                    <p class="text-[11px] font-bold text-white/80 tracking-normal uppercase">{{ $institution->name ?? $settings['slogan'] ?? 'Sistem Antrean Real-time' }}</p>
+                    <h1 class="text-lg font-extrabold tracking-tight text-white leading-none mb-1.5">{{ $institution->app_name ?? $settings['company_name'] ?? $settings['name'] ?? 'Antree' }}</h1>
+                    <p class="text-[11px] font-bold text-slate-300 tracking-normal uppercase">{{ $institution->name ?? $settings['slogan'] ?? 'Sistem Antrean Real-time' }}</p>
                 </div>
             </div>
 
             <div class="flex items-center gap-6">
                 <!-- Audio Unlocker -->
-                <div id="audio-unlock" class="relative group px-4 py-2 bg-white/10 hover:bg-white/20 border rounded-full text-[10px] font-bold uppercase tracking-wider text-white flex items-center gap-2 cursor-pointer transition duration-150"
-                     style="border-color: rgba(255, 255, 255, 0.25);">
+                <div id="audio-unlock" class="relative group px-4 py-2 bg-white/5 hover:bg-white/10 border border-slate-700 rounded-full text-[10px] font-bold uppercase tracking-wider text-white flex items-center gap-2 cursor-pointer transition duration-150">
                     <span class="w-2 h-2 rounded-full bg-white animate-ping absolute -top-0.5 -right-0.5" id="audio-ping"></span>
                     <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/></svg>
                     <span id="audio-status-text">Aktifkan Suara</span>
@@ -139,9 +138,9 @@
                 </div>
 
                 <!-- Clock Widgets -->
-                <div class="text-right border-l pl-6" style="border-color: rgba(255, 255, 255, 0.2); height: 38px;">
-                    <div id="hdr-time" class="text-2xl font-black text-white text-glow-white tracking-tight leading-none mb-1">--:--:--</div>
-                    <div id="hdr-date" class="text-[10px] font-bold text-white/70 uppercase tracking-wider leading-none">—</div>
+                <div class="text-right border-l border-slate-700 pl-6" style="height: 38px;">
+                    <div id="hdr-time" class="text-2xl font-black text-white tracking-tight leading-none mb-1">--:--:--</div>
+                    <div id="hdr-date" class="text-[10px] font-bold text-slate-300 uppercase tracking-wider leading-none">—</div>
                 </div>
             </div>
         </header>
@@ -198,7 +197,7 @@
             </div>
         </div>
 
-        <!-- ===== COUNTERS HORIZONTAL GRID STRIP (SOLID SERVICE COLORS, SEAMLESS, NO GAP) ===== -->
+        <!-- ===== COUNTERS HORIZONTAL GRID STRIP (SOLID SERVICE COLORS, ELEVATED & HIGH CONTRAST) ===== -->
         <div class="flex-1 grid gap-0 w-full" 
              style="grid-template-columns: repeat({{ max(1, $counters->count()) }}, minmax(0, 1fr));">
             @foreach($counters as $counter)
@@ -206,17 +205,20 @@
                     $serving = $counter->queues->first();
                     $svcColor = $counter->serviceType->color ?? $primaryColor;
                 @endphp
-                <div class="p-6 flex flex-col justify-between hover:scale-[1.005] transition duration-200 border-r"
-                     style="background: {{ $svcColor }}; border-color: rgba(255, 255, 255, 0.12); border-radius: 0;">
+                <div class="p-6 flex flex-col justify-between hover:scale-[1.005] transition duration-200 border-r relative overflow-hidden"
+                     style="background: {{ $svcColor }}; border-color: rgba(255, 255, 255, 0.15); border-radius: 0; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);">
                     
-                    <div class="flex items-center justify-between gap-2 border-b pb-3 mb-2"
-                         style="border-color: rgba(255, 255, 255, 0.15);">
-                        <span class="text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded bg-white shadow-sm" style="color: {{ $svcColor }}">{{ $counter->serviceType->name }}</span>
-                        <span class="text-[10px] font-black uppercase tracking-wider text-white/90">{{ $counter->name }}</span>
+                    {{-- Clean overlay to enrich color depth --}}
+                    <div class="absolute inset-0 bg-gradient-to-b from-white/5 to-black/10 pointer-events-none"></div>
+                    
+                    <div class="relative z-10 flex items-center justify-between gap-2 border-b pb-3 mb-2"
+                         style="border-color: rgba(255, 255, 255, 0.2);">
+                        <span class="text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded bg-slate-950/25 text-white border border-white/10">{{ $counter->serviceType->name }}</span>
+                        <span class="text-xs font-black uppercase tracking-wider text-white drop-shadow-sm">{{ $counter->name }}</span>
                     </div>
                     
-                    <div class="flex-1 flex items-center justify-center py-4">
-                        <span id="counter-number-{{ $counter->id }}" class="text-6xl font-black tracking-tight select-none text-white text-glow-white">
+                    <div class="relative z-10 flex-1 flex items-center justify-center py-4">
+                        <span id="counter-number-{{ $counter->id }}" class="text-7xl font-black tracking-tight select-none text-white drop-shadow-[0_4px_12px_rgba(0,0,0,0.25)] text-glow-white">
                             {{ $serving?->queue_number ?? '—' }}
                         </span>
                     </div>

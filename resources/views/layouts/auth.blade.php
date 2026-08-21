@@ -27,32 +27,38 @@
         }
     </style>
 </head>
-<body class="bg-slate-100 antialiased min-h-screen flex items-center justify-center p-4">
-    <div class="max-w-5xl w-full bg-white rounded-3xl overflow-hidden flex flex-col md:flex-row auth-card min-h-[600px]">
-        <!-- Left Side: Hero Section -->
-        <div class="hidden md:flex md:w-1/2 bg-auth-blue p-12 flex-col items-center justify-center text-center relative overflow-hidden">
-            <!-- Decorative Elements -->
-            <div class="absolute top-0 right-0 w-32 h-32 bg-white opacity-5 -mr-16 -mt-16 rounded-full"></div>
-            <div class="absolute bottom-0 left-0 w-48 h-48 bg-white opacity-5 -ml-24 -mb-24 rounded-full"></div>
+<body class="bg-slate-100 antialiased min-h-screen">
+    @hasSection('sky_layout')
+        @yield('sky_layout')
+    @else
+        <div class="min-h-screen flex items-center justify-center p-4">
+            <div class="max-w-5xl w-full bg-white rounded-3xl overflow-hidden flex flex-col md:flex-row auth-card min-h-[600px]">
+                <!-- Left Side: Hero Section -->
+                <div class="hidden md:flex md:w-1/2 bg-auth-blue p-12 flex-col items-center justify-center text-center relative overflow-hidden">
+                    <!-- Decorative Elements -->
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-white opacity-5 -mr-16 -mt-16 rounded-full"></div>
+                    <div class="absolute bottom-0 left-0 w-48 h-48 bg-white opacity-5 -ml-24 -mb-24 rounded-full"></div>
 
-            <div class="relative z-10">
-                <img src="{{ asset('images/auth_hero.png') }}" alt="Welcome Astronaut" class="w-64 h-64 mx-auto mb-8 drop-shadow-2xl">
-                <h1 class="text-white text-3xl font-bold mb-4">Welcome aboard my friend</h1>
-                <p class="text-blue-200 text-lg opacity-80">just a couple of clicks and we start</p>
-                
-                <!-- Pagination Dots Mock -->
-                <div class="flex justify-center mt-12 space-x-2">
-                    <div class="w-2 h-2 rounded-full bg-white"></div>
-                    <div class="w-2 h-2 rounded-full bg-white/30"></div>
-                    <div class="w-2 h-2 rounded-full bg-white/30"></div>
+                    <div class="relative z-10">
+                        <img src="{{ asset('images/auth_hero.png') }}" alt="Welcome Astronaut" class="w-64 h-64 mx-auto mb-8 drop-shadow-2xl">
+                        <h1 class="text-white text-3xl font-bold mb-4">Welcome aboard my friend</h1>
+                        <p class="text-blue-200 text-lg opacity-80">just a couple of clicks and we start</p>
+                        
+                        <!-- Pagination Dots Mock -->
+                        <div class="flex justify-center mt-12 space-x-2">
+                            <div class="w-2 h-2 rounded-full bg-white"></div>
+                            <div class="w-2 h-2 rounded-full bg-white/30"></div>
+                            <div class="w-2 h-2 rounded-full bg-white/30"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Side: Form Section -->
+                <div class="flex-1 p-8 md:p-16 flex flex-col justify-center">
+                    @yield('content')
                 </div>
             </div>
         </div>
-
-        <!-- Right Side: Form Section -->
-        <div class="flex-1 p-8 md:p-16 flex flex-col justify-center">
-            @yield('content')
-        </div>
-    </div>
+    @endif
 </body>
 </html>

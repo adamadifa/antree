@@ -35,6 +35,11 @@ class DisplayController extends Controller
             ->latest('called_at')
             ->first();
 
+        $layout = $settings['display_layout'] ?? 'default';
+        if ($layout === 'list_counter') {
+            return view('display.list_counter', compact('counters', 'settings', 'media', 'lastCalled'));
+        }
+
         return view('display.index', compact('counters', 'settings', 'media', 'lastCalled'));
     }
 }
