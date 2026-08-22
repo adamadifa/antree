@@ -136,7 +136,7 @@ npm run dev
 ### 👨‍💼 1. Masuk Sebagai Administrator (Admin Portal)
 * **URL Akses**: `http://127.0.0.1:8000/login`
 * **Akun Bawaan (Default)**:
-  * *Email*: `admin@antree.com` (atau email yang disesuaikan saat seeding)
+  * *Email*: `admin@antree.local` (atau email yang disesuaikan saat seeding)
   * *Password*: `password`
 * **Fungsi Utama**:
   * **Dashboard**: Pantau jumlah antrean berjalan hari ini, performa layanan, status loket operasional aktif, serta grafik kunjungan harian.

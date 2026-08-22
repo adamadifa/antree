@@ -19,11 +19,17 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Share institution globally across all views
+        // Share institution and display settings globally across all views
         if (!app()->runningInConsole()) {
             try {
                 if (\Illuminate\Support\Facades\Schema::hasTable('institutions')) {
-                    view()->share('institution', \App\Models\Institution::first());
+                    $institution = \App\Models\Institution::first();
+                    view()->share('institution', $institution);
+
+                    if (\Illuminate\Support\Facades\Schema::hasTable('display_settings')) {
+                        $displaySettings = \App\Models\DisplaySetting::pluck('value', 'key')->toArray();
+                        view()->share('displaySettings', $displaySettings);
+                    }
                 }
             } catch (\Exception $e) {
                 // Prevent crash during migrations or DB setups
