@@ -12,7 +12,7 @@ class ServiceTypeController extends Controller
 {
     public function index()
     {
-        $serviceTypes = ServiceType::orderBy('sort_order')->get();
+        $serviceTypes = ServiceType::withCount('counters')->orderBy('sort_order')->get();
         return view('admin.service-types.index', compact('serviceTypes'));
     }
 

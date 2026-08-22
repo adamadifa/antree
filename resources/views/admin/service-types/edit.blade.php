@@ -4,106 +4,157 @@
 @section('header', 'Edit Service Details')
 
 @section('content')
-<div class="max-w-3xl mx-auto">
-    <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden min-h-[500px] flex flex-col">
-        {{-- Header Section --}}
-        <div class="px-8 py-6 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
-            <div>
-                <h3 class="text-lg font-bold text-slate-800">Updating Service: {{ $serviceType->name }}</h3>
-                <p class="text-xs text-slate-500 mt-1">Modify settings for this queue category</p>
+<div class="max-w-3xl space-y-6">
+    {{-- Breadcrumb Row --}}
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+            <h1 class="text-xl font-bold text-slate-800 tracking-tight">Edit Service Type</h1>
+            <div class="flex items-center space-x-2 text-xs text-slate-400 mt-1.5">
+                <a href="{{ route('admin.dashboard') }}" class="hover:text-slate-655 transition">
+                    <svg class="w-3.5 h-3.5 inline mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                </a>
+                <span>/</span>
+                <a href="{{ route('admin.service-types.index') }}" class="hover:text-slate-655 transition">Service Types</a>
+                <span>/</span>
+                <span class="text-rose-500 font-semibold">Edit</span>
             </div>
-            <div class="w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-sm" style="background-color: {{ $serviceType->color }}">
-                {{ $serviceType->code }}
+        </div>
+        <div class="w-9 h-9 rounded-xl flex items-center justify-center text-white font-bold text-xs shadow-sm shrink-0" style="background-color: {{ $serviceType->color }}">
+            {{ $serviceType->code }}
+        </div>
+    </div>
+
+    {{-- Form Card --}}
+    <div class="bg-white rounded-3xl border border-slate-200/80 shadow-sm overflow-hidden flex flex-col">
+        {{-- Header Section --}}
+        <div class="px-6 py-4 bg-slate-50/50 border-b border-slate-100 flex items-center justify-between">
+            <div>
+                <h3 class="text-sm font-bold text-slate-800">Updating Service: {{ $serviceType->name }}</h3>
+                <p class="text-[11px] text-slate-400 font-medium">Modify settings for this queue category.</p>
+            </div>
+            <div class="w-8 h-8 bg-rose-50 rounded-lg flex items-center justify-center">
+                <svg class="w-4 h-4 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
             </div>
         </div>
 
-        <div class="p-8 flex-1">
-            <form id="service-form" action="{{ route('admin.service-types.update', $serviceType) }}" method="POST" class="space-y-6" novalidate>
+        <div class="p-6">
+            <form id="service-form" action="{{ route('admin.service-types.update', $serviceType) }}" method="POST" class="space-y-5" novalidate>
                 @csrf
                 @method('PUT')
                 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                     {{-- Name --}}
-                    <div class="space-y-1.5">
-                        <label for="name" class="text-[11px] font-bold text-slate-500 uppercase tracking-wider ml-1">Service Name</label>
-                        <input type="text" name="name" id="name" value="{{ old('name', $serviceType->name) }}" 
-                               oninput="validateName(this.value)"
-                               class="block w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-teal-50 focus:border-teal-500 transition duration-200 text-sm font-medium text-slate-700 @error('name') border-red-300 ring-4 ring-red-50 @enderror">
-                        <p id="error-name" class="text-[10px] font-bold text-red-500 mt-1 pl-1 capitalize hidden">Nama layanan tidak boleh kosong.</p>
-                        @error('name') <p class="text-[10px] font-bold text-red-500 mt-1 pl-1 capitalize">{{ $message }}</p> @enderror
+                    <div class="space-y-1">
+                        <div class="relative">
+                            <label for="name" id="label-name" class="absolute -top-2.5 left-4 bg-white px-2 text-xs font-bold text-slate-500 transition-all @error('name') text-red-500 @enderror">
+                                Service Name <span class="text-red-500">*</span>
+                            </label>
+                            <div id="wrapper-name" class="flex items-center border rounded-2xl px-4 py-1.5 bg-white transition duration-200 focus-within:ring-4 @error('name') border-red-300 ring-red-50 focus-within:border-red-400 focus-within:ring-red-50 @else border-slate-200 focus-within:border-rose-450 focus-within:ring-rose-50 @enderror">
+                                <svg class="w-5 h-5 text-slate-400 shrink-0 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                </svg>
+                                <input type="text" name="name" id="name" value="{{ old('name', $serviceType->name) }}" placeholder="Masukan nama layanan" 
+                                       oninput="validateName(this.value)"
+                                       class="w-full bg-transparent text-sm font-medium text-slate-705 border-0 focus:ring-0 outline-none py-2 placeholder:text-slate-400/60">
+                            </div>
+                        </div>
+                        <p id="error-name" class="text-[10px] font-semibold text-red-500 mt-1.5 pl-1 capitalize @error('name') block @else hidden @enderror">
+                            @error('name') {{ $message }} @else Nama lengkap wajib diisi @enderror
+                        </p>
                     </div>
 
                     {{-- Code --}}
-                    <div class="space-y-1.5">
-                        <label for="code" class="text-[11px] font-bold text-slate-500 uppercase tracking-wider ml-1">Service Code (Prefix)</label>
-                        <input type="text" name="code" id="code" value="{{ old('code', $serviceType->code) }}" 
-                               oninput="validateCode(this.value)"
-                               class="block w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-teal-50 focus:border-teal-500 transition duration-200 text-sm font-medium text-slate-700 @error('code') border-red-300 ring-4 ring-red-50 @enderror">
-                        <p id="error-code" class="text-[10px] font-bold text-red-500 mt-1 pl-1 capitalize hidden">Kode layanan sudah digunakan.</p>
-                        @error('code') <p class="text-[10px] font-bold text-red-500 mt-1 pl-1 capitalize">{{ $message }}</p> @enderror
-                    </div>
-{{-- ... partial content omitted for brevity, but I will fulfill the full replacement below --}}
-
-
-                    {{-- Color --}}
-                    <div class="space-y-1.5 md:col-span-2">
-                        <label for="color" class="text-[11px] font-bold text-slate-500 uppercase tracking-wider ml-1">Identity Color</label>
-                        <div class="flex flex-wrap items-center gap-4 p-4 bg-slate-50 rounded-2xl border border-slate-100">
-                            {{-- Color Presets --}}
-                            <div class="flex items-center gap-2 pr-4 border-r border-slate-200">
-                                @php $presets = ['#2DD4BF', '#3B82F6', '#6366F1', '#8B5CF6', '#EC4899', '#F43F5E', '#F16032', '#FAB005', '#82C91E']; @endphp
-                                @foreach($presets as $preset)
-                                <button type="button" 
-                                        onclick="updateColor('{{ $preset }}')"
-                                        class="w-6 h-6 rounded-full border-2 border-white shadow-sm hover:scale-125 transition duration-200" 
-                                        style="background-color: {{ $preset }}"></button>
-                                @endforeach
+                    <div class="space-y-1">
+                        <div class="relative">
+                            <label for="code" id="label-code" class="absolute -top-2.5 left-4 bg-white px-2 text-xs font-bold text-slate-500 transition-all @error('code') text-red-500 @enderror">
+                                Service Code (Prefix) <span class="text-red-500">*</span>
+                            </label>
+                            <div id="wrapper-code" class="flex items-center border rounded-2xl px-4 py-1.5 bg-white transition duration-200 focus-within:ring-4 @error('code') border-red-300 ring-red-50 focus-within:border-red-400 focus-within:ring-red-50 @else border-slate-200 focus-within:border-rose-450 focus-within:ring-rose-50 @enderror">
+                                <svg class="w-5 h-5 text-slate-400 shrink-0 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                </svg>
+                                <input type="text" name="code" id="code" value="{{ old('code', $serviceType->code) }}" placeholder="Contoh: A, CS, T" 
+                                       oninput="validateCode(this.value)"
+                                       class="w-full bg-transparent text-sm font-medium text-slate-705 border-0 focus:ring-0 outline-none py-2 placeholder:text-slate-400/60">
                             </div>
+                        </div>
+                        <p id="error-code" class="text-[10px] font-semibold text-red-500 mt-1.5 pl-1 capitalize @error('code') block @else hidden @enderror">
+                            @error('code') {{ $message }} @else Kode layanan wajib diisi @enderror
+                        </p>
+                    </div>
 
-                            {{-- Native Picker & Hex Input --}}
-                            <div class="flex items-center gap-3 flex-1">
-                                <div class="relative w-10 h-10 shrink-0">
-                                    <input type="color" id="color-picker" value="{{ old('color', $serviceType->color) }}" 
-                                           class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-                                           oninput="updateColor(this.value)">
-                                    <div id="color-preview" class="w-full h-full rounded-xl border border-white shadow-sm ring-1 ring-slate-200" style="background-color: {{ old('color', $serviceType->color) }}"></div>
+                    {{-- Color Picker & Presets --}}
+                    <div class="space-y-1 md:col-span-2">
+                        <div class="relative">
+                            <label class="absolute -top-2.5 left-4 bg-white px-2 text-xs font-bold text-slate-500 transition-all @error('color') text-red-500 @enderror">
+                                Identity Color <span class="text-red-500">*</span>
+                            </label>
+                            <div class="flex flex-wrap items-center gap-4 p-4 bg-white border border-slate-200 rounded-2xl">
+                                {{-- Color Presets --}}
+                                <div class="flex items-center gap-2 pr-4 border-r border-slate-200">
+                                    @php $presets = ['#2DD4BF', '#3B82F6', '#6366F1', '#8B5CF6', '#EC4899', '#F43F5E', '#F16032', '#FAB005', '#82C91E']; @endphp
+                                    @foreach($presets as $preset)
+                                    <button type="button" 
+                                            onclick="updateColor('{{ $preset }}')"
+                                            class="w-6 h-6 rounded-full border-2 border-white shadow-sm hover:scale-125 transition duration-200" 
+                                            style="background-color: {{ $preset }}"></button>
+                                    @endforeach
                                 </div>
-                                <div class="flex-1 relative">
-                                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-sm">#</span>
-                                    <input type="text" name="color" id="color-text" value="{{ old('color', $serviceType->color) }}" 
-                                           class="w-full pl-8 pr-4 py-2 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-teal-50 focus:border-teal-500 transition duration-200 text-sm font-mono font-bold text-slate-700 uppercase"
-                                           oninput="if(this.value.startsWith('#')) { updateColor(this.value); } else { updateColor('#' + this.value); }">
+
+                                {{-- Native Picker & Hex Input --}}
+                                <div class="flex items-center gap-3 flex-1">
+                                    <div class="relative w-9 h-9 shrink-0">
+                                        <input type="color" id="color-picker" value="{{ old('color', $serviceType->color) }}" 
+                                               class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                                               oninput="updateColor(this.value)">
+                                        <div id="color-preview" class="w-full h-full rounded-xl border border-white shadow-sm ring-1 ring-slate-250" style="background-color: {{ old('color', $serviceType->color) }}"></div>
+                                    </div>
+                                    <div class="flex-1 relative">
+                                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-sm">#</span>
+                                        <input type="text" name="color" id="color-text" value="{{ old('color', $serviceType->color) }}" 
+                                               class="w-full pl-8 pr-4 py-2 bg-slate-50/50 border border-slate-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-rose-50 focus:border-rose-500 transition duration-200 text-xs font-mono font-bold text-slate-705 uppercase"
+                                               oninput="if(this.value.startsWith('#')) { updateColor(this.value); } else { updateColor('#' + this.value); }">
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        @error('color') <p class="text-[10px] font-bold text-red-500 mt-1 pl-1 capitalize">{{ $message }}</p> @enderror
+                        @error('color') <p class="text-[10px] font-semibold text-red-500 mt-1 pl-1 capitalize">{{ $message }}</p> @enderror
                     </div>
 
                     {{-- Sort Order --}}
-                    <div class="space-y-1.5">
-                        <label for="sort_order" class="text-[11px] font-bold text-slate-500 uppercase tracking-wider ml-1">Display Order</label>
-                        <input type="number" name="sort_order" id="sort_order" value="{{ old('sort_order', $serviceType->sort_order) }}" 
-                               class="block w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-teal-50 focus:border-teal-500 transition duration-200 text-sm font-medium text-slate-700" required>
+                    <div class="space-y-1 col-span-2 md:col-span-1">
+                        <div class="relative">
+                            <label for="sort_order" class="absolute -top-2.5 left-4 bg-white px-2 text-xs font-bold text-slate-500 transition-all">
+                                Display Order <span class="text-red-500">*</span>
+                            </label>
+                            <div class="flex items-center border border-slate-200 rounded-2xl px-4 py-1.5 bg-white transition duration-200 focus-within:border-rose-450 focus-within:ring-4 focus-within:ring-rose-50">
+                                <svg class="w-5 h-5 text-slate-400 shrink-0 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"/>
+                                </svg>
+                                <input type="number" name="sort_order" id="sort_order" value="{{ old('sort_order', $serviceType->sort_order) }}" placeholder="Masukkan nomor urut" 
+                                       class="w-full bg-transparent text-sm font-medium text-slate-755 border-0 focus:ring-0 outline-none py-2" required>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
                 {{-- Status Toggle --}}
-                <div class="py-6 border-t border-slate-100 flex items-center justify-between">
+                <div class="py-5 border-t border-slate-100 flex items-center justify-between">
                     <div>
-                        <h4 class="text-sm font-bold text-slate-700">Service Status</h4>
-                        <p class="text-[11px] text-slate-400 font-medium">Toggle visibility of this service.</p>
+                        <h4 class="text-sm font-bold text-slate-755">Service Status</h4>
+                        <p class="text-[11px] text-slate-450 font-medium">Toggle visibility of this service.</p>
                     </div>
-                    <label class="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" name="is_active" class="sr-only peer" {{ $serviceType->is_active ? 'checked' : '' }}>
-                        <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none ring-0 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal-500"></div>
+                    <label class="relative inline-flex items-center cursor-pointer select-none">
+                        <input type="checkbox" name="is_active" class="sr-only peer" {{ $serviceType->is_active ? 'checked' : '' }} value="1">
+                        <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-rose-500"></div>
                     </label>
                 </div>
 
-                <div class="pt-4 flex items-center gap-3">
-                    <button type="submit" id="btn-save" class="flex-1 h-12 bg-blue-600 text-white text-sm font-bold rounded-xl shadow-lg shadow-blue-500/20 hover:bg-blue-700 transition duration-200">
+                <div class="pt-2 flex items-center gap-3">
+                    <button type="submit" id="btn-save" class="flex-1 h-11 bg-rose-500 hover:bg-rose-600 text-white text-xs font-bold rounded-xl shadow-md shadow-rose-500/10 transition-all duration-150 uppercase tracking-wider">
                         Update Configuration
                     </button>
-                    <a href="{{ route('admin.service-types.index') }}" class="px-8 h-12 flex items-center justify-center border border-slate-200 text-slate-600 text-sm font-bold rounded-xl hover:bg-slate-50 transition duration-200">
+                    <a href="{{ route('admin.service-types.index') }}" class="px-6 h-11 flex items-center justify-center border border-slate-200 text-slate-500 text-xs font-bold rounded-xl hover:bg-slate-50 transition duration-150 uppercase tracking-wider">
                         Cancel
                     </a>
                 </div>
@@ -114,6 +165,7 @@
 
 <script>
     let codeTimeout = null;
+    let isNameValid = true;
     let isCodeValid = true;
 
     // Form Submit Handler
@@ -124,10 +176,7 @@
         validateName(nameValue);
         validateCode(codeValue);
 
-        const hasErrorName = !document.getElementById('error-name').classList.contains('hidden');
-        const hasErrorCode = !document.getElementById('error-code').classList.contains('hidden');
-
-        if (hasErrorName || hasErrorCode || !isCodeValid) {
+        if (!isNameValid || !isCodeValid) {
             e.preventDefault();
             // Scroll to the first error
             const firstError = document.querySelector('.border-red-300');
@@ -143,29 +192,47 @@
     }
 
     function validateName(value) {
-        const input = document.getElementById('name');
+        const wrapper = document.getElementById('wrapper-name');
+        const label = document.getElementById('label-name');
         const error = document.getElementById('error-name');
         
         if (value.trim() === '') {
-            input.classList.add('border-red-300', 'ring-4', 'ring-red-50');
+            wrapper.classList.remove('border-slate-200', 'focus-within:border-rose-450', 'focus-within:ring-rose-50');
+            wrapper.classList.add('border-red-300', 'ring-red-50', 'focus-within:border-red-400', 'focus-within:ring-red-50');
+            label.classList.add('text-red-500');
+            error.innerText = 'Nama layanan wajib diisi';
             error.classList.remove('hidden');
+            isNameValid = false;
         } else {
-            input.classList.remove('border-red-300', 'ring-4', 'ring-red-50');
+            wrapper.classList.add('border-slate-200', 'focus-within:border-rose-450', 'focus-within:ring-rose-50');
+            wrapper.classList.remove('border-red-300', 'ring-red-50', 'focus-within:border-red-400', 'focus-within:ring-red-50');
+            label.classList.remove('text-red-500');
             error.classList.add('hidden');
+            isNameValid = true;
         }
     }
 
     function validateCode(value) {
-        const input = document.getElementById('code');
+        const wrapper = document.getElementById('wrapper-code');
+        const label = document.getElementById('label-code');
         const error = document.getElementById('error-code');
         
         if (value.trim() === '') {
-            input.classList.add('border-red-300', 'ring-4', 'ring-red-50');
-            error.innerText = 'Kode layanan tidak boleh kosong.';
+            wrapper.classList.remove('border-slate-200', 'focus-within:border-rose-450', 'focus-within:ring-rose-50');
+            wrapper.classList.add('border-red-300', 'ring-red-50', 'focus-within:border-red-400', 'focus-within:ring-red-50');
+            label.classList.add('text-red-500');
+            error.innerText = 'Kode layanan wajib diisi';
             error.classList.remove('hidden');
             isCodeValid = false;
             return;
         }
+
+        // Immediately hide error as it is non-empty
+        wrapper.classList.add('border-slate-200', 'focus-within:border-rose-450', 'focus-within:ring-rose-50');
+        wrapper.classList.remove('border-red-300', 'ring-red-50', 'focus-within:border-red-400', 'focus-within:ring-red-50');
+        label.classList.remove('text-red-500');
+        error.classList.add('hidden');
+        isCodeValid = true;
 
         // AJAX Uniqueness Check (Debounced)
         clearTimeout(codeTimeout);
@@ -174,14 +241,12 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.exists) {
-                        input.classList.add('border-red-300', 'ring-4', 'ring-red-50');
-                        error.innerText = 'Kode layanan "' + value + '" sudah digunakan.';
+                        wrapper.classList.remove('border-slate-200', 'focus-within:border-rose-450', 'focus-within:ring-rose-50');
+                        wrapper.classList.add('border-red-300', 'ring-red-50', 'focus-within:border-red-400', 'focus-within:ring-red-50');
+                        label.classList.add('text-red-500');
+                        error.innerText = 'Kode layanan "' + value + '" sudah digunakan';
                         error.classList.remove('hidden');
                         isCodeValid = false;
-                    } else {
-                        input.classList.remove('border-red-300', 'ring-4', 'ring-red-50');
-                        error.classList.add('hidden');
-                        isCodeValid = true;
                     }
                 });
         }, 500);

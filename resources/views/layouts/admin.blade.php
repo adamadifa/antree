@@ -169,13 +169,15 @@
                                 <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" alt="Avatar" class="w-8 h-8 rounded-full object-cover ring-2 ring-rose-400">
                             </div>
                             {{-- Dropdown menu on hover/click --}}
-                            <div class="hidden group-hover:block absolute right-0 top-full mt-2 w-48 bg-white border border-slate-100 rounded-xl shadow-lg py-1.5 z-50">
-                                <div class="px-4 py-2 border-b border-slate-100">
-                                    <p class="text-xs font-bold text-slate-800">{{ Auth::user()->name }}</p>
-                                    <p class="text-[10px] text-slate-400 uppercase tracking-wider">{{ ucfirst(Auth::user()->role) }}</p>
+                            <div class="hidden group-hover:block absolute right-0 top-full pt-2 w-48 z-50">
+                                <div class="bg-white border border-slate-100 rounded-xl shadow-lg py-1.5">
+                                    <div class="px-4 py-2 border-b border-slate-100">
+                                        <p class="text-xs font-bold text-slate-800">{{ Auth::user()->name }}</p>
+                                        <p class="text-[10px] text-slate-400 uppercase tracking-wider">{{ ucfirst(Auth::user()->role) }}</p>
+                                    </div>
+                                    <a href="{{ route('admin.general-settings.index') }}" class="block px-4 py-2 text-xs text-slate-600 hover:bg-slate-50">Settings</a>
+                                    <button onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="w-full text-left px-4 py-2 text-xs text-rose-600 hover:bg-rose-50 font-medium">Logout</button>
                                 </div>
-                                <a href="{{ route('admin.general-settings.index') }}" class="block px-4 py-2 text-xs text-slate-600 hover:bg-slate-50">Settings</a>
-                                <button onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="w-full text-left px-4 py-2 text-xs text-rose-600 hover:bg-rose-50 font-medium">Logout</button>
                             </div>
                         </div>
                     </div>

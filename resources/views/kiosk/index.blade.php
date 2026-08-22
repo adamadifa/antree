@@ -107,12 +107,12 @@
         }
     </style>
 </head>
-<body class="antialiased flex flex-col items-center justify-center p-6 lg:p-10 select-none">
+<body class="antialiased flex flex-col items-center justify-start sm:justify-center p-4 sm:p-6 lg:p-10 select-none">
 
     <!-- Unified Modern Header -->
-    <header class="w-full max-w-6xl bg-white/90 backdrop-blur-md px-6 py-4 rounded-3xl border border-slate-200/80 shadow-sm flex flex-wrap items-center justify-between mb-10 fade-up gap-4">
+    <header class="w-full max-w-6xl bg-white/90 backdrop-blur-md px-5 py-4 rounded-3xl border border-slate-200/80 shadow-sm flex flex-col sm:flex-row items-center sm:justify-between mb-6 sm:mb-10 fade-up gap-4">
         <!-- Left: Brand / Institution -->
-        <div class="flex items-center gap-4">
+        <div class="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 text-center sm:text-left">
             @if(isset($institution) && $institution->logo_path)
                 <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center p-1 border border-slate-100 flex-shrink-0">
                     <img src="{{ asset($institution->logo_path) }}" alt="Logo" class="w-full h-full object-contain rounded-lg">
@@ -123,47 +123,47 @@
                 </div>
             @endif
             <div>
-                <h1 class="text-lg font-bold text-slate-800 tracking-tight leading-tight">{{ $institution->name ?? 'Antree Kiosk' }}</h1>
-                <div class="flex items-center gap-2 mt-0.5">
+                <h1 class="text-base sm:text-lg font-bold text-slate-800 tracking-tight leading-tight">{{ $institution->name ?? 'Antree Kiosk' }}</h1>
+                <div class="flex items-center justify-center sm:justify-start gap-2 mt-0.5">
                     <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                    <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Sistem Aktif</span>
+                    <span class="text-[9px] sm:text-[10px] font-bold text-slate-500 uppercase tracking-widest">Sistem (Kiosk)</span>
                 </div>
             </div>
         </div>
 
         <!-- Right: Status & Clock Info -->
-        <div class="flex items-center gap-6 ml-auto">
+        <div class="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 w-full sm:w-auto">
             {{-- Printer Status (Clean Pill Interaction) --}}
             <div id="printer-status-container" class="hidden md:flex items-center gap-2.5 cursor-pointer group" onclick="openPrinterModal()">
                 <div class="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center border border-slate-100 group-hover:bg-slate-100 transition-colors">
                     <svg id="printer-icon" class="w-4 h-4 text-slate-400 group-hover:text-slate-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
                 </div>
                 <div class="text-left">
-                    <p id="printer-status-text" class="text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-1">Printer Off</p>
+                    <p id="printer-status-text" class="text-[9px] font-bold text-slate-400 tracking-widest leading-none mb-1">Printer Off</p>
                     <p id="printer-name-text" class="text-[11px] font-bold text-slate-700 leading-none">Belum Terhubung</p>
                 </div>
             </div>
 
             {{-- Divider --}}
-            <div class="h-6 w-px bg-slate-200 hidden md:block"></div>
+            <div class="h-6 w-px bg-slate-200 hidden sm:block"></div>
 
             {{-- Clock (Clean Text Block) --}}
-            <div class="text-right">
-                <p id="current-time" class="text-xl font-extrabold text-slate-800 tabular-nums leading-none mb-1">00:00:00</p>
+            <div class="text-center sm:text-right">
+                <p id="current-time" class="text-lg sm:text-xl font-extrabold text-slate-800 tabular-nums leading-none mb-1">00:00:00</p>
                 <p id="current-date" class="text-[9px] font-bold text-slate-500 uppercase tracking-widest leading-none">Jum, 20 Mar 2026</p>
             </div>
         </div>
     </header>
 
     <!-- Title -->
-    <div class="text-center mb-10 fade-up" style="animation-delay:0.05s">
-        <h2 class="text-3xl lg:text-4xl font-extrabold text-slate-800 mb-3 tracking-tight">Silakan Pilih Layanan</h2>
-        <p class="text-slate-500 font-medium text-sm lg:text-base">Sentuh pada salah satu kategori untuk mencetak nomor antrean Anda</p>
+    <div class="text-center mb-6 sm:mb-10 fade-up px-2" style="animation-delay:0.05s">
+        <h2 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-800 mb-2 sm:mb-3 tracking-tight">Silakan Pilih Layanan</h2>
+        <p class="text-slate-500 font-medium text-xs sm:text-sm lg:text-base">Sentuh pada salah satu kategori untuk mencetak nomor antrean Anda</p>
     </div>
 
     <!-- Service Grid -->
     <main class="w-full max-w-6xl fade-up" style="animation-delay:0.1s">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             @foreach($services as $index => $service)
             <button onclick="takeTicket({{ $service->id }}, '{{ $service->name }}')" 
                     class="service-card rounded-2xl text-left group overflow-hidden"
@@ -172,26 +172,26 @@
                 {{-- Clean Soft Highlight --}}
                 <div class="card-flare"></div>
 
-                <div class="relative z-10 flex items-center gap-5 px-7 py-6">
+                <div class="relative z-10 flex items-center gap-4 sm:gap-5 px-5 py-4 sm:px-7 sm:py-6">
                     {{-- Icon --}}
-                    <div class="w-12 h-12 rounded-xl flex items-center justify-center bg-white/20 backdrop-blur-sm flex-shrink-0 group-hover:bg-white/30 transition">
-                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                    <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center bg-white/20 backdrop-blur-sm flex-shrink-0 group-hover:bg-white/30 transition">
+                        <svg class="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
                     </div>
 
                     {{-- Text Content --}}
                     <div class="flex-1 min-w-0">
-                        <h3 class="text-lg font-extrabold text-white mb-0.5 leading-tight truncate">{{ $service->name }}</h3>
-                        <p class="text-[10px] font-bold text-white/90 uppercase tracking-widest">KODE: {{ $service->code }}</p>
+                        <h3 class="text-base sm:text-lg font-extrabold text-white mb-0.5 leading-tight truncate">{{ $service->name }}</h3>
+                        <p class="text-[9px] sm:text-[10px] font-bold text-white/90 uppercase tracking-widest">KODE: {{ $service->code }}</p>
                     </div>
 
                     {{-- Stats --}}
-                    <div class="flex-shrink-0 text-right pl-4 border-l border-white/20">
+                    <div class="flex-shrink-0 text-right pl-3 sm:pl-4 border-l border-white/20">
                         <p class="text-[8px] font-black text-white/80 uppercase tracking-widest mb-0.5">TUNGGU</p>
-                        <p class="text-lg font-extrabold text-white tabular-nums"><span id="service-wait-{{ $service->id }}">{{ $service->wait_time }}</span><span class="text-[9px] text-white/90 ml-0.5">m</span></p>
+                        <p class="text-base sm:text-lg font-extrabold text-white tabular-nums leading-none mt-0.5"><span id="service-wait-{{ $service->id }}">{{ $service->wait_time }}</span><span class="text-[9px] text-white/90 ml-0.5">m</span></p>
                     </div>
 
                     {{-- Arrow --}}
-                    <div class="flex-shrink-0 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-x-2 group-hover:translate-x-0">
+                    <div class="hidden sm:block flex-shrink-0 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-x-2 group-hover:translate-x-0">
                         <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
                     </div>
                 </div>

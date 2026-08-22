@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     @php
@@ -135,6 +136,12 @@
                     <div class="absolute right-0 top-11 bg-white border border-slate-200 p-3 rounded-xl w-60 text-[9px] leading-relaxed text-slate-500 shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition duration-150 pointer-events-none z-50">
                         <b class="text-teal-600">Pemberitahuan:</b> Klik di sini agar sistem suara pemanggil aktif otomatis setelah browser dimuat ulang.
                     </div>
+                </div>
+
+                <!-- Fullscreen Toggle -->
+                <div id="fullscreen-toggle" onclick="toggleFullscreen()" class="relative group px-4 py-2 bg-white/5 hover:bg-white/10 border border-slate-700 rounded-full text-[10px] font-bold uppercase tracking-wider text-white flex items-center gap-2 cursor-pointer transition duration-150">
+                    <i class="ti ti-maximize text-sm" id="fs-icon"></i>
+                    <span id="fs-text">Layar Penuh</span>
                 </div>
 
                 <!-- Clock Widgets -->
@@ -348,6 +355,29 @@
                 popupInner.classList.add('scale-90');
             }, 5500);
         }
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.error(`Error attempting to enable fullscreen: ${err.message}`);
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        }
+        document.addEventListener('fullscreenchange', () => {
+            const icon = document.getElementById('fs-icon');
+            const text = document.getElementById('fs-text');
+            if (icon && text) {
+                if (document.fullscreenElement) {
+                    icon.className = 'ti ti-minimize text-sm';
+                    text.textContent = 'Keluar';
+                } else {
+                    icon.className = 'ti ti-maximize text-sm';
+                    text.textContent = 'Layar Penuh';
+                }
+            }
+        });
 
         // Live Reverb Channels Echo Listeners
         window.addEventListener('DOMContentLoaded', () => {

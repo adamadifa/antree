@@ -39,6 +39,12 @@ class DisplayController extends Controller
         if ($layout === 'list_counter') {
             return view('display.list_counter', compact('counters', 'settings', 'media', 'lastCalled'));
         }
+        if ($layout === 'imigrasi') {
+            return view('display.imigrasi', compact('counters', 'settings', 'media', 'lastCalled'));
+        }
+        if ($layout === 'lounge') {
+            return view('display.lounge', compact('counters', 'settings', 'media', 'lastCalled'));
+        }
 
         return view('display.index', compact('counters', 'settings', 'media', 'lastCalled'));
     }

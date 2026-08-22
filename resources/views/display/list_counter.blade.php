@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     @php
@@ -111,11 +112,18 @@
                     </div>
                 </div>
 
-                <!-- Audio Unlocker -->
-                <div id="audio-unlock" class="relative group px-4.5 py-2.5 bg-slate-900 hover:bg-slate-800 border border-slate-700 rounded-full text-[10px] font-bold uppercase tracking-wider text-white flex items-center gap-2 cursor-pointer transition duration-150">
-                    <span class="w-2 h-2 rounded-full bg-orange-500 animate-ping absolute -top-0.5 -right-0.5" id="audio-ping"></span>
-                    <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/></svg>
-                    <span id="audio-status-text">Aktifkan Suara</span>
+                <div class="flex items-center gap-2">
+                    <!-- Audio Unlocker -->
+                    <div id="audio-unlock" class="relative group px-4.5 py-2.5 bg-slate-900 hover:bg-slate-800 border border-slate-700 rounded-full text-[10px] font-bold uppercase tracking-wider text-white flex items-center gap-2 cursor-pointer transition duration-150">
+                        <span class="w-2 h-2 rounded-full bg-orange-500 animate-ping absolute -top-0.5 -right-0.5" id="audio-ping"></span>
+                        <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/></svg>
+                        <span id="audio-status-text">Aktifkan Suara</span>
+                    </div>
+                    <!-- Fullscreen Toggle -->
+                    <div id="fullscreen-toggle" onclick="toggleFullscreen()" class="relative group px-4.5 py-2.5 bg-slate-900 hover:bg-slate-800 border border-slate-700 rounded-full text-[10px] font-bold uppercase tracking-wider text-white flex items-center gap-2 cursor-pointer transition duration-150">
+                        <i class="ti ti-maximize text-sm" id="fs-icon"></i>
+                        <span id="fs-text">Layar Penuh</span>
+                    </div>
                 </div>
             </div>
 
@@ -316,6 +324,29 @@
                 popupInner.classList.add('scale-90');
             }, 5500);
         }
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.error(`Error attempting to enable fullscreen: ${err.message}`);
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        }
+        document.addEventListener('fullscreenchange', () => {
+            const icon = document.getElementById('fs-icon');
+            const text = document.getElementById('fs-text');
+            if (icon && text) {
+                if (document.fullscreenElement) {
+                    icon.className = 'ti ti-minimize text-sm';
+                    text.textContent = 'Keluar';
+                } else {
+                    icon.className = 'ti ti-maximize text-sm';
+                    text.textContent = 'Layar Penuh';
+                }
+            }
+        });
 
         // Live Reverb Listeners
         window.addEventListener('DOMContentLoaded', () => {
